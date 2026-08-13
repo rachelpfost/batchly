@@ -329,11 +329,10 @@
     </div>
 
     <button class="nav-item active" data-page="overview" onclick="showPage('overview')">Overview</button>
-    <button class="nav-item" data-page="p1" onclick="showPage('p1')"><span class="n">1</span>Discovery Process</button>
+    <button class="nav-item" data-page="p1" onclick="showPage('p1')"><span class="n">1</span>Research &amp; Methodology</button>
     <button class="nav-item" data-page="p2" onclick="showPage('p2')"><span class="n">2</span>Secondary Research</button>
-    <button class="nav-item" data-page="p3" onclick="showPage('p3')"><span class="n">3</span>Qualitative Data</button>
-    <button class="nav-item" data-page="p4" onclick="showPage('p4')"><span class="n">4</span>Prototype</button>
-    <button class="nav-item" data-page="p5" onclick="showPage('p5')"><span class="n">5</span>Retro</button>
+    <button class="nav-item" data-page="p4" onclick="showPage('p4')"><span class="n">3</span>Prototype</button>
+    <button class="nav-item" data-page="p5" onclick="showPage('p5')"><span class="n">4</span>Retro</button>
   </nav>
 
   <main>
@@ -356,26 +355,21 @@
       <div class="nav-cards">
         <div class="nav-card" onclick="showPage('p1')">
           <div class="num">01</div>
-          <div class="title">Discovery Process</div>
-          <p class="desc">How the problem was found and validated, and the methodology behind it.</p>
+          <div class="title">Research &amp; Methodology</div>
+          <p class="desc">How the problem was found and validated — methodology, findings, and what people said.</p>
         </div>
         <div class="nav-card" onclick="showPage('p2')">
           <div class="num">02</div>
           <div class="title">Secondary Research</div>
           <p class="desc">Competitive landscape and market context.</p>
         </div>
-        <div class="nav-card" onclick="showPage('p3')">
-          <div class="num">03</div>
-          <div class="title">Qualitative Data</div>
-          <p class="desc">What people said, and how the signal was weighed.</p>
-        </div>
         <div class="nav-card" onclick="showPage('p4')">
-          <div class="num">04</div>
+          <div class="num">03</div>
           <div class="title">Prototype</div>
           <p class="desc">What was built, what was scoped out, and why — plus the live link.</p>
         </div>
         <div class="nav-card" onclick="showPage('p5')">
-          <div class="num">05</div>
+          <div class="num">04</div>
           <div class="title">Retro</div>
           <p class="desc">What worked, what didn't, and what's next.</p>
         </div>
@@ -384,24 +378,59 @@
 
     <!-- SECTION 1 -->
     <section class="page" id="p1">
-      <div class="eyebrow">01 · Discovery Process &amp; Methodology</div>
-      <h2>How the problem was found</h2>
+      <div class="eyebrow">01 · Research &amp; Methodology</div>
+      <h2>How the problem was found, and what people said</h2>
 
       <h3>Starting broad</h3>
       <p>The process started with a systematic sweep: what are mundane pain points of daily living that people gripe about online? I surveyed complaints across categories — food/kitchen, public etiquette, tech/digital life, household — looking for friction that was common, emotionally resonant, and underserved by existing tools.</p>
       <p>The food/kitchen category surfaced a consistent cluster: people who cook mixed, one-vessel meals described tracking macros for those dishes as disproportionately painful compared to anything else, across Reddit, Facebook meal-prep groups, and fitness communities. That narrowed the question to something specific: <em>why is tracking macros for a pot of chili so much harder than a grilled chicken breast, and what would it take to fix it?</em></p>
 
       <h3>Qualitative research</h3>
-      <p>I posted to Reddit (r/mealprep-style communities) and a Facebook meal-prep group asking about pain points tracking home-cooked meal nutrition — deliberately without mentioning any proposed solution, to avoid leading responses. That choice mattered: I wanted to validate the pain independent of my hypothesis, since confirmation bias is the most common failure mode in customer discovery.</p>
+      <p>I posted to Reddit (r/mealprep-style communities) and a Facebook meal-prep group asking about pain points tracking home-cooked meal nutrition — deliberately without mentioning any proposed solution, to avoid leading responses, since confirmation bias is the most common failure mode in customer discovery. I also ran two structured interviews and tested the two closest competitors firsthand — Cronometer and MacroFactor, details in Section 2.</p>
 
-      <h3>Firsthand competitor testing</h3>
-      <p>I downloaded and tested the two closest competitors myself — Cronometer and MacroFactor — rather than relying on marketing copy or reviews. Details in Section 2.</p>
+      <h3>What people said, and how it was weighed</h3>
+      <p>Given the timeline, this wasn't a formal survey with a representative sample. Instead, the signal was built by counting how many <em>independent, unprompted</em> sources named the same friction point without being asked about it directly. Six did — across two forums and two live interviews — which is treated here as a directional pattern, not a statistically representative result.</p>
 
-      <h3>Two structured interviews</h3>
-      <p>A conversation with Marshall, a MacroFactor user who has lost over 100 pounds tracking his food, confirmed the friction gap from a different angle and sharpened who the product is actually for. A second conversation, with a friend who matches the target user almost exactly — a mom of two who primarily batch-cooks mixed one-pot dishes and is also on a weight-loss journey — surfaced both core pain points unprompted from a single open-ended question. Details in Section 3.</p>
+      <div class="card" style="border-left: 4px solid var(--color-teal);">
+        <div class="eyebrow" style="margin-bottom:6px;">Featured — structured interview, target persona</div>
+        <p>A structured interview with a friend who matches the target user almost exactly: a mom of two who primarily batch-cooks mixed one-pot dishes — chicken and rice casserole, chicken soup, stews, tuna noodle casserole — and is also on a weight-loss journey. Asked one open-ended question, <em>"What is the hardest part about tracking your food in your particular cooking context?"</em>, she named both core pain points unprompted, without being led toward either:</p>
+        <p class="quote">She doesn't want to separate her leftovers into precisely-weighed portions — and she primarily cooks in one pot, weighing as she adds.</p>
+        <p style="margin-bottom:0;">Asked how she'd want this to actually work, she said she'd use a <span class="quote" style="display:inline; border:none; padding:0; font-style:italic;">"calculator"</span> while cooking, then <span class="quote" style="display:inline; border:none; padding:0; font-style:italic;">"copy in the measurements"</span> into Lose It!, her tracker of choice — independently describing the companion-app model this product is built around, unprompted.</p>
+      </div>
 
-      <h3>A note on methodology, given the timeline</h3>
-      <div class="note">The standard approach for this kind of discovery is 5–7 structured interviews, asking "tell me about the last time you tried to do X" rather than "what would you do if" — people describe problems as solutions, and the real problem is underneath. Given a Monday-to-Thursday, four-day window, I substituted public-forum discovery (unprompted, unleading) plus two structured interviews for a full interview round. Section 5 outlines what a fuller round would add.</div>
+      <table>
+        <tr><th>Source</th><th>What they said or did</th><th>What it confirms</th></tr>
+        <tr>
+          <td>Facebook meal-prep group (a mom, self-described "huge one pot person")</td>
+          <td>Described the MyFitnessPal "create a meal, then figure out portions" flow as painful; wished for <span class="quote" style="display:inline; border:none; padding:0; font-style:italic;">"a true lazy way that was also accurate"</span></td>
+          <td>Pain point named directly and unprompted, by exactly the target profile</td>
+        </tr>
+        <tr>
+          <td>Reddit user, documented 65 lb weight loss</td>
+          <td>Hand-built a Google Sheets system: per-ingredient density table, summed to a total, weighed after cooking, portions logged against density. ~5 min/day once set up.</td>
+          <td>The exact workflow already exists as a manual workaround, plus proof the setup cost (not the ongoing use) is the real friction</td>
+        </tr>
+        <tr>
+          <td>Forum users, multiple threads</td>
+          <td>Logging total calories against total weight with serving size fixed at 1, then logging fractional "servings" to approximate a weighed portion</td>
+          <td>Demand for gram-level precision strong enough that people reverse-engineer it out of tools not built for it</td>
+        </tr>
+        <tr>
+          <td>Cronometer user, forum post</td>
+          <td>Pre-weighs empty pots and pans in advance specifically to subtract pot weight after cooking</td>
+          <td>Manual workaround for exactly the in-app vessel-tare tracking this product provides</td>
+        </tr>
+        <tr>
+          <td>User interview — Marshall (MacroFactor user, 100+ lb weight loss)</td>
+          <td>Eyeballs combo meals (e.g. chocolate cake) instead of tracking them, because MacroFactor is too clunky for multiple ingredients cooked together. Doesn't cook combo meals often enough for it to bother him personally.</td>
+          <td>Confirms the gap from a power-user angle, and sharpens the target: someone whose <em>primary</em> cooking style is one-pot meals, not an occasional mixed dish</td>
+        </tr>
+      </table>
+
+      <h3>Honest limits of this data</h3>
+      <p>This is six sources, not five to seven structured interviews — the difference still matters. Forum posts are self-selected and can't be probed for follow-up the way an interview can, and two conversations is not five to seven. Of the two interviews, the featured one above closes the biggest gap in the rest of the data: a conversation with someone who <em>is</em> the target persona, not adjacent to it the way Marshall is, and she named both mechanics — plus the companion-app distribution model — unprompted. What this data supports well: the pain is real, named unprompted, and named by the right user profile. What it doesn't yet support: precise frequency (how common is this, really?) or willingness to pay.</p>
+
+      <div class="note">Standard practice for this kind of discovery is 5–7 structured interviews, asking "tell me about the last time you tried to do X" rather than "what would you do if" — people describe problems as solutions, and the real problem is underneath. Given a Monday-to-Thursday, four-day window, I substituted public-forum discovery (unprompted, unleading) plus two structured interviews for a full interview round. Section 4 outlines what a fuller round would add.</div>
     </section>
 
     <!-- SECTION 2 -->
@@ -444,60 +473,9 @@
       <p>The innovation here isn't new math — dividing raw macros by cooked weight already exists in spreadsheets and in Cronometer. What's missing is a friction-free <em>workflow</em>: cumulative weighing without re-taring between ingredients, in-app vessel tracking, and one-tap portion logging. That reframed the product from "a better macro database" to "fewer steps to the same number."</p>
     </section>
 
-    <!-- SECTION 3 -->
-    <section class="page" id="p3">
-      <div class="eyebrow">03 · Qualitative Data &amp; How It Was Quantified</div>
-      <h2>What people said, and how it was weighed</h2>
-      <p>Given the timeline, this wasn't a formal survey with a representative sample. Instead, the signal was built by counting how many <em>independent, unprompted</em> sources named the same friction point without being asked about it directly. Six did — across two forums and two live interviews — which is treated here as a directional pattern, not a statistically representative result.</p>
-
-      <div class="card" style="border-left: 4px solid var(--color-teal);">
-        <div class="eyebrow" style="margin-bottom:6px;">Featured — structured interview, target persona</div>
-        <p>A structured interview with a friend who matches the target user almost exactly: a mom of two who primarily batch-cooks mixed one-pot dishes — chicken and rice casserole, chicken soup, stews, tuna noodle casserole — and is also on a weight-loss journey. Asked one open-ended question, <em>"What is the hardest part about tracking your food in your particular cooking context?"</em>, she named both core pain points unprompted, without being led toward either:</p>
-        <p class="quote">She doesn't want to separate her leftovers into precisely-weighed portions — and she primarily cooks in one pot, weighing as she adds.</p>
-        <p style="margin-bottom:0;">Asked how she'd want this to actually work, she said she'd use a <span class="quote" style="display:inline; border:none; padding:0; font-style:italic;">"calculator"</span> while cooking, then <span class="quote" style="display:inline; border:none; padding:0; font-style:italic;">"copy in the measurements"</span> into Lose It!, her tracker of choice — independently describing the companion-app model this product is built around, unprompted.</p>
-      </div>
-
-      <table>
-        <tr><th>Source</th><th>What they said or did</th><th>What it confirms</th></tr>
-        <tr>
-          <td>User interview — friend, mom of two (target persona: primary one-pot cook, weight-loss journey)</td>
-          <td>Asked open-endedly what's hardest about tracking food in her cooking context. Unprompted, named both: doesn't want to portion leftovers precisely, cooks in one pot and weighs as she adds. Said she'd use a "calculator" while cooking, then "copy in the measurements" into Lose It!</td>
-          <td>Direct, unprompted confirmation of both core mechanics <em>and</em> the companion-app model, from the actual target persona — not an adjacent one</td>
-        </tr>
-        <tr>
-          <td>Facebook meal-prep group (a mom, self-described "huge one pot person")</td>
-          <td>Described the MyFitnessPal "create a meal, then figure out portions" flow as painful; wished for <span class="quote" style="display:inline; border:none; padding:0; font-style:italic;">"a true lazy way that was also accurate"</span></td>
-          <td>Pain point named directly and unprompted, by exactly the target profile</td>
-        </tr>
-        <tr>
-          <td>Reddit user, documented 65 lb weight loss</td>
-          <td>Hand-built a Google Sheets system: per-ingredient density table, summed to a total, weighed after cooking, portions logged against density. ~5 min/day once set up.</td>
-          <td>The exact workflow already exists as a manual workaround, plus proof the setup cost (not the ongoing use) is the real friction</td>
-        </tr>
-        <tr>
-          <td>Forum users, multiple threads</td>
-          <td>Logging total calories against total weight with serving size fixed at 1, then logging fractional "servings" to approximate a weighed portion</td>
-          <td>Demand for gram-level precision strong enough that people reverse-engineer it out of tools not built for it</td>
-        </tr>
-        <tr>
-          <td>Cronometer user, forum post</td>
-          <td>Pre-weighs empty pots and pans in advance specifically to subtract pot weight after cooking</td>
-          <td>Manual workaround for exactly the in-app vessel-tare tracking this product provides</td>
-        </tr>
-        <tr>
-          <td>User interview — Marshall (MacroFactor user, 100+ lb weight loss)</td>
-          <td>Eyeballs combo meals (e.g. chocolate cake) instead of tracking them, because MacroFactor is too clunky for multiple ingredients cooked together. Doesn't cook combo meals often enough for it to bother him personally.</td>
-          <td>Confirms the gap from a power-user angle, and sharpens the target: someone whose <em>primary</em> cooking style is one-pot meals, not an occasional mixed dish</td>
-        </tr>
-      </table>
-
-      <h3>Honest limits of this data</h3>
-      <p>This is six sources, not five to seven structured interviews — the difference still matters. Forum posts are self-selected and can't be probed for follow-up the way an interview can, and two conversations is not five to seven. Of the two interviews, one closes the biggest gap in the rest of the data: it's a conversation with someone who <em>is</em> the target persona, not adjacent to it the way Marshall is, and she named both mechanics — plus the companion-app distribution model — unprompted. What this data supports well: the pain is real, named unprompted, and named by the right user profile. What it doesn't yet support: precise frequency (how common is this, really?) or willingness to pay. Section 5 covers what a fuller round would add.</p>
-    </section>
-
     <!-- SECTION 4 -->
     <section class="page" id="p4">
-      <div class="eyebrow">04 · Prototype / Proposed Solution</div>
+      <div class="eyebrow">03 · Prototype / Proposed Solution</div>
       <h2>What was built</h2>
       <p>Batchly is a single self-contained HTML file — no build step, no account, no API dependency. That's a deliberate scoping choice: with four days on the clock, it kept the build budget pointed at proving the core mechanic, not setting up infrastructure.</p>
 
@@ -535,12 +513,12 @@
       <div class="note">Worth naming directly rather than leaving buried in scope docs: the target user is a mom on her phone in the kitchen, and a real share of that audience is on iPhone. Chrome-only in v1 means some of the exact people this is built for can't open it yet — an honest gap, not an oversight, and the first browser-support work I'd pick up next.</div>
 
       <h3>How it was built</h3>
-      <p>Rather than building freeform, the prototype followed spec-driven development inside an agile-style workflow — each phase produces a written artifact before code gets touched, and the requirements get broken into epics and stories the way a sprint backlog would.</p>
+      <p>Rather than building freeform, the prototype followed spec-driven development inside an agile-style workflow — each phase produces a written artifact before code gets touched:</p>
       <ul>
-        <li><strong>Analyst.</strong> Problem statement, target user, and discovery findings written up before any product decisions.</li>
+        <li><strong>Analyst.</strong> Problem statement and discovery findings written up before any product decisions.</li>
         <li><strong>PM.</strong> Requirements turned into explicit in-scope/out-of-scope calls and a success metric.</li>
-        <li><strong>Architect.</strong> Technical design decisions — data model, calculation logic — documented and reasoned through before implementation.</li>
-        <li><strong>Dev.</strong> Requirements broken into epics, then stories, each written as "As a [user], I want [X], so that [Y]" with acceptance criteria in given/when/then format, and tracked through backlog → in-progress → review → done like a sprint board.</li>
+        <li><strong>Architect.</strong> Data model and calculation logic documented and reasoned through before implementation.</li>
+        <li><strong>Dev.</strong> Epics broken into stories with given/when/then acceptance criteria, tracked backlog → in-progress → review → done like a sprint board.</li>
       </ul>
       <p style="margin-bottom:0;">Each story went through code review before being marked done, and anything flagged but not worth fixing immediately was logged rather than silently dropped — the same discipline a real team applies to technical debt. When new information changed scope mid-build, it went through a short written change proposal instead of getting folded in ad hoc.</p>
 
@@ -575,7 +553,7 @@
 
     <!-- SECTION 5 -->
     <section class="page" id="p5">
-      <div class="eyebrow">05 · Retro</div>
+      <div class="eyebrow">04 · Retro</div>
       <h2>What went well, what didn't, what's next</h2>
 
       <h3>What didn't go well: the accuracy assumption</h3>
@@ -587,7 +565,7 @@
         <tr><th>Hypothesis</th><th>How to test it</th></tr>
         <tr><td>Portion-logging (daily) sustains engagement even if new dish creation is only weekly</td><td>Track ratio of portion-logs to new-dish-builds in usage data</td></tr>
         <tr><td>In a free companion model, monetization comes from acquisition/revenue share, not direct payment</td><td>Measure integration usage rates and correlation with retention in the partner app</td></tr>
-        <tr><td>Users want a focused companion tool that ports its data straight into their existing tracker, not a full standalone replacement for MFP/Lose It! — the end state is a one-tap push of a built dish's macros into whichever app they already log in. Already has direct, unprompted support: the target-persona interview in Section 3 described doing this exact workflow by hand today — "calculator" while cooking, then "copy in the measurements" into Lose It!</td><td>Survey users at 30 and 90 days on standalone-vs-integration preference; track opt-in rate once one-tap push to a partner app ships</td></tr>
+        <tr><td>Users want a focused companion tool that ports its data straight into their existing tracker, not a full standalone replacement for MFP/Lose It! — the end state is a one-tap push of a built dish's macros into whichever app they already log in. Already has direct, unprompted support from the target-persona interview in Section 1.</td><td>Survey users at 30 and 90 days on standalone-vs-integration preference; track opt-in rate once one-tap push to a partner app ships</td></tr>
         <tr><td>A mobile app is the right production form factor (v1 prototype is a webapp)</td><td>Not yet tested — flagged as an open platform decision</td></tr>
       </table>
 
@@ -614,7 +592,7 @@
 </div>
 
 <script>
-  var order = ['overview','p1','p2','p3','p4','p5'];
+  var order = ['overview','p1','p2','p4','p5'];
 
   function showPage(id) {
     var pages = document.querySelectorAll('.page');
