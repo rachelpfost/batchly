@@ -318,6 +318,12 @@
       margin-top: 0;
     }
 
+    .section-hint {
+      font-size: var(--text-xs);
+      color: var(--color-text-secondary);
+      margin-bottom: var(--space-sm);
+    }
+
     /* Category Selection */
     .category-grid {
       display: flex;
@@ -1263,6 +1269,7 @@
         <div id="cook-complete-body"></div>
       </div>
       <div class="screen-actions">
+        <div class="section-hint" style="text-align:center;margin-bottom:var(--space-sm);">Your dish is now in Active Batches — tap it anytime to log a portion</div>
         <button class="btn-primary" id="btn-back-to-kitchen">Back to Kitchen</button>
       </div>
     </div>
@@ -1606,7 +1613,7 @@
               '<p>Your kitchen is ready &mdash; let\'s build your first dish!</p>' +
             '</div>';
         } else {
-          var html = '';
+          var html = '<div class="section-hint">Tap a dish to log a portion and track your macros</div>';
           for (var i = 0; i < activeBatches.length; i++) {
             var b = activeBatches[i];
             html +=
