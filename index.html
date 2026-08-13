@@ -333,7 +333,7 @@
     <button class="nav-item" data-page="p2" onclick="showPage('p2')"><span class="n">2</span>Secondary Research</button>
     <button class="nav-item" data-page="p3" onclick="showPage('p3')"><span class="n">3</span>Qualitative Data</button>
     <button class="nav-item" data-page="p4" onclick="showPage('p4')"><span class="n">4</span>Prototype</button>
-    <button class="nav-item" data-page="p5" onclick="showPage('p5')"><span class="n">5</span>Open Questions</button>
+    <button class="nav-item" data-page="p5" onclick="showPage('p5')"><span class="n">5</span>Retro</button>
   </nav>
 
   <main>
@@ -342,14 +342,16 @@
     <section class="page active" id="overview">
       <div class="eyebrow">Product discovery walkthrough</div>
       <h1>Batchly</h1>
-      <p class="lede">A friction-free companion app for tracking macros in home-cooked mixed dishes — casseroles, soups, chili, stew. This walkthrough covers the discovery process behind it, start to finish: how the problem was found, what research backs it, and where the prototype picks up.</p>
+      <p class="lede">A friction-free companion app for tracking macros in home-cooked mixed dishes.</p>
 
-      <div class="card" style="margin-top: 24px;">
-        <p>Existing macro trackers solve macro tracking for the bodybuilder logging chicken breast and rice as separate line items. They break down for the home cook batch-cooking a family casserole or a pot of chili — and the breakdown happens on <em>both</em> ends of the workflow, not just one.</p>
-        <p><strong>Building the dish:</strong> Cronometer's recipe tool records raw and cooked weight, but still requires weighing and taring each ingredient individually, with nowhere in-app to track the cooking vessel's own weight. There's no way to just keep adding to the same pot and have the running total handled for you.</p>
-        <p><strong>Eating from it:</strong> MyFitnessPal and Lose It! make you declare a serving count when you save a cooked dish — "this makes 6 servings" — and every time you eat from it afterward, reality has to match that number: portion the leftovers to fit, or remember the exact per-serving gram weight days later. MacroFactor solves that half (weigh a portion, get its macros) but offers no guided build flow to get there.</p>
-        <p style="margin-bottom: 0;">No single existing tool solves both halves. Batchly does — cumulative weighing with a software-tracked running total going in, and pure gram-based portion logging with nothing to declare or remember coming out.</p>
+      <p style="font-size: 18px; font-weight: 600; color: var(--color-text); margin: 22px 0;">The problem: dishes like casseroles, chili, and soup are nearly impossible to track accurately unless you divide them into precise, pre-weighed portions — and almost nobody actually does that.</p>
+
+      <div class="card">
+        <p><strong>Meet Sarah.</strong> Three kids, a slow cooker always going, a weight-loss goal she's serious about. Sunday she makes a pot of chicken and rice casserole — enough for the week. Lose It! makes her declare "6 servings" before she's even tasted it. By Wednesday she's guessing whether this bowl is one serving or one and a half. She's stopped trusting the number, so she's stopped logging the casserole at all.</p>
+        <p style="margin-bottom: 0;"><strong>Batchly fixes both ends of that:</strong> she weighs ingredients into the pot as she cooks, no re-taring or math — then weighs her bowl at dinner instead of guessing a serving count. Nothing to declare up front, nothing to remember later.</p>
       </div>
+
+      <h2 style="font-size: 30px; margin-top: 44px; margin-bottom: 4px;">My Process</h2>
 
       <div class="nav-cards">
         <div class="nav-card" onclick="showPage('p1')">
@@ -374,8 +376,8 @@
         </div>
         <div class="nav-card" onclick="showPage('p5')">
           <div class="num">05</div>
-          <div class="title">Open Questions</div>
-          <p class="desc">What's unresolved, and where this goes next.</p>
+          <div class="title">Retro</div>
+          <p class="desc">What worked, what didn't, and what's next.</p>
         </div>
       </div>
     </section>
@@ -573,14 +575,14 @@
 
     <!-- SECTION 5 -->
     <section class="page" id="p5">
-      <div class="eyebrow">05 · Open Questions &amp; Future Roadmap</div>
-      <h2>What's unresolved</h2>
+      <div class="eyebrow">05 · Retro</div>
+      <h2>What went well, what didn't, what's next</h2>
 
-      <h3>Known limitation — and the mitigation</h3>
+      <h3>What didn't go well: the accuracy assumption</h3>
       <p>Raw macros are assumed conserved through cooking (cooked totals = raw totals, only weight changes). That assumption breaks if fat is drained or the dish is stirred/reduced unevenly before portioning — fat-draining changes total fat mass, and uneven reduction can make later portions denser than earlier ones. Flagged as a known v1 assumption: the dish is homogeneous and nothing is added or removed between "cooked weight" and the start of portioning.</p>
       <p>That's a real crack in a product whose whole pitch is precision over the AI-photo-logging alternative — worth more than a silent footnote. The v1-appropriate mitigation isn't a math fix, it's a visibility one: a one-line reminder at the "mark as cooked" step ("Density assumes nothing is drained, added, or removed before portioning") turns a silent accuracy failure into a stated assumption the user can judge for themselves. It doesn't solve the underlying problem, but it stops the product from quietly claiming precision it can't back up in that specific case.</p>
 
-      <h3>Hypotheses to test next</h3>
+      <h3>Action items: hypotheses to test next</h3>
       <table>
         <tr><th>Hypothesis</th><th>How to test it</th></tr>
         <tr><td>Portion-logging (daily) sustains engagement even if new dish creation is only weekly</td><td>Track ratio of portion-logs to new-dish-builds in usage data</td></tr>
@@ -589,7 +591,7 @@
         <tr><td>A mobile app is the right production form factor (v1 prototype is a webapp)</td><td>Not yet tested — flagged as an open platform decision</td></tr>
       </table>
 
-      <h3>Ideas explored, not yet validated</h3>
+      <h3>Parked ideas, not yet validated</h3>
       <ul>
         <li><strong>Shareable dish templates</strong> — "Mom's Turkey Chili, 247 cal/100g" as a reusable, shareable template; a possible content/acquisition channel.</li>
         <li><strong>"What's in the fridge" leftover tracking</strong> — surfacing remaining cooked weight as a daily-use inventory view, addressing retention.</li>
@@ -604,7 +606,7 @@
         <li><strong>Strategic outcome</strong> — if the companion model shows adoption, a natural acquisition target for an established tracker; if users signal demand for standalone use, expand into a full tracker built around the home-cook workflow.</li>
       </ol>
 
-      <h3>What a fuller discovery round would add</h3>
+      <h3>What I'd do differently with more time</h3>
       <p>With more than four days: 5–7 structured interviews using "tell me about the last time you tried to track a mixed dish" rather than hypothetical framing, real theme-frequency counting instead of a five-source pattern match, and a check on willingness to pay before assuming the companion-app model is the right monetization path.</p>
     </section>
 
