@@ -1,0 +1,2850 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Batchly</title>
+  <style>
+    :root {
+      --color-primary: #E8734A;
+      --color-primary-light: #F5A88A;
+      --color-primary-dark: #C4573A;
+
+      --color-surface: #FFF8F5;
+      --color-card: #FFFFFF;
+      --color-text: #3D3230;
+      --color-text-secondary: #7A6E6B;
+      --color-border: #E8DDD9;
+
+      --color-calories: #E8964A;
+      --color-protein: #3A9B8F;
+      --color-carbs: #D4A84A;
+      --color-fat: #9B6BA3;
+
+      --color-success: #5AAA6F;
+      --color-warning: #D4964A;
+      --color-undo: #5A8AB5;
+      --color-error: #C4574A;
+
+      --space-xs: 4px;
+      --space-sm: 8px;
+      --space-md: 16px;
+      --space-lg: 24px;
+      --space-xl: 32px;
+
+      --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --text-xl: 28px;
+      --text-lg: 20px;
+      --text-md: 16px;
+      --text-sm: 14px;
+      --text-xs: 12px;
+
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-full: 50%;
+      --shadow-card: 0 2px 8px rgba(61, 50, 48, 0.08);
+
+      --tap-target-min: 44px;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-family);
+      font-size: var(--text-md);
+      line-height: 1.4;
+      color: var(--color-text);
+      background: var(--color-surface);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .app {
+      max-width: 480px;
+      margin: 0 auto;
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    .header {
+      padding: var(--space-md) var(--space-md) var(--space-sm);
+      text-align: center;
+    }
+
+    .header h1 {
+      font-size: var(--text-xl);
+      font-weight: 700;
+      color: var(--color-primary);
+      line-height: 1.2;
+    }
+
+    .header .tagline {
+      font-size: var(--text-sm);
+      color: var(--color-text-secondary);
+      margin-top: var(--space-xs);
+    }
+
+    /* Screens */
+    .screen {
+      display: none;
+      flex: 1;
+      flex-direction: column;
+    }
+
+    .screen.active {
+      display: flex;
+    }
+
+    .screen-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: var(--space-md);
+    }
+
+    .screen-actions {
+      padding: var(--space-md);
+      padding-bottom: max(var(--space-md), env(safe-area-inset-bottom));
+    }
+
+    /* Primary Button */
+    .btn-primary {
+      display: block;
+      width: 100%;
+      min-height: 48px;
+      padding: var(--space-sm) var(--space-md);
+      background: var(--color-primary);
+      color: #FFFFFF;
+      border: none;
+      border-radius: var(--radius-lg);
+      font-family: var(--font-family);
+      font-size: var(--text-md);
+      font-weight: 700;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      transition: background 0.15s;
+    }
+
+    .btn-primary:active {
+      background: var(--color-primary-dark);
+    }
+
+    /* Secondary Button */
+    .btn-secondary {
+      display: block;
+      width: 100%;
+      min-height: 48px;
+      padding: var(--space-sm) var(--space-md);
+      background: transparent;
+      color: var(--color-undo);
+      border: 2px solid var(--color-undo);
+      border-radius: var(--radius-lg);
+      font-family: var(--font-family);
+      font-size: var(--text-md);
+      font-weight: 600;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .btn-secondary:active {
+      background: var(--color-undo);
+      color: #FFFFFF;
+    }
+
+    /* Card */
+    .card {
+      background: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-card);
+      padding: var(--space-md);
+    }
+
+    /* Numeric Input */
+    .input-group {
+      position: relative;
+    }
+
+    .input-numeric {
+      width: 100%;
+      min-height: 48px;
+      padding: var(--space-sm) var(--space-xl) var(--space-sm) var(--space-md);
+      border: 2px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-family);
+      font-size: var(--text-md);
+      color: var(--color-text);
+      text-align: right;
+      background: var(--color-card);
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .input-numeric:focus {
+      border-color: var(--color-primary);
+    }
+
+    .input-suffix {
+      position: absolute;
+      right: var(--space-md);
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--color-text-secondary);
+      font-size: var(--text-sm);
+      pointer-events: none;
+    }
+
+    .input-suffix.unit-cycle {
+      pointer-events: auto;
+      cursor: pointer;
+      color: var(--color-primary);
+      text-decoration: underline;
+      text-decoration-style: dotted;
+      min-width: var(--tap-target-min);
+      min-height: var(--tap-target-min);
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .input-suffix.unit-cycle:active {
+      color: var(--color-primary-dark);
+    }
+
+    /* Text Input */
+    .input-text {
+      width: 100%;
+      min-height: 48px;
+      padding: var(--space-sm) var(--space-md);
+      border: 2px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-family);
+      font-size: var(--text-md);
+      color: var(--color-text);
+      background: var(--color-card);
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .input-text:focus {
+      border-color: var(--color-primary);
+    }
+
+    /* Macro Display */
+    .macro-display {
+      text-align: center;
+    }
+
+    .macro-display .macro-headline {
+      font-size: var(--text-xl);
+      font-weight: 700;
+      color: var(--color-calories);
+      line-height: 1.2;
+    }
+
+    .macro-display .macro-headline-label {
+      font-size: var(--text-xs);
+      font-weight: 500;
+      text-transform: uppercase;
+      color: var(--color-text-secondary);
+      margin-top: var(--space-xs);
+    }
+
+    .macro-row {
+      display: flex;
+      justify-content: center;
+      gap: var(--space-lg);
+      margin-top: var(--space-sm);
+    }
+
+    .macro-item {
+      text-align: center;
+    }
+
+    .macro-item .macro-value {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      line-height: 1.2;
+    }
+
+    .macro-item .macro-label {
+      font-size: var(--text-xs);
+      font-weight: 500;
+      text-transform: uppercase;
+      color: var(--color-text-secondary);
+      margin-top: var(--space-xs);
+    }
+
+    .macro-protein .macro-value { color: var(--color-protein); }
+    .macro-carbs .macro-value { color: var(--color-carbs); }
+    .macro-fat .macro-value { color: var(--color-fat); }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: var(--space-xl) var(--space-md);
+      color: var(--color-text-secondary);
+    }
+
+    .empty-state .empty-icon {
+      font-size: 48px;
+      margin-bottom: var(--space-sm);
+    }
+
+    .empty-state p {
+      font-size: var(--text-sm);
+      line-height: 1.5;
+    }
+
+    /* Section Headers */
+    .section-header {
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--color-text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: var(--space-sm);
+      margin-top: var(--space-lg);
+    }
+
+    .section-header:first-child {
+      margin-top: 0;
+    }
+
+    /* Category Selection */
+    .category-grid {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+
+    .category-option {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      width: 100%;
+      min-height: 56px;
+      padding: var(--space-md);
+      background: var(--color-card);
+      border: 2px solid var(--color-border);
+      border-radius: var(--radius-md);
+      font-family: var(--font-family);
+      font-size: var(--text-md);
+      font-weight: 500;
+      color: var(--color-text);
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      transition: border-color 0.15s, background 0.15s;
+      text-align: left;
+    }
+
+    .category-option:active {
+      background: var(--color-primary-light);
+      border-color: var(--color-primary);
+    }
+
+    .category-option.selected {
+      border-color: var(--color-primary);
+      background: rgba(232, 115, 74, 0.06);
+    }
+
+    .category-emoji {
+      font-size: var(--text-lg);
+      width: 32px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    /* Dish Name Input Screen */
+    .name-prompt {
+      margin-top: var(--space-lg);
+    }
+
+    .name-prompt label {
+      display: block;
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--color-text-secondary);
+      margin-bottom: var(--space-sm);
+    }
+
+    .name-prompt .hint {
+      font-size: var(--text-sm);
+      color: var(--color-text-secondary);
+      margin-top: var(--space-sm);
+    }
+
+    /* Build Placeholder */
+    .build-placeholder {
+      text-align: center;
+      padding: var(--space-xl) var(--space-md);
+    }
+
+    .build-placeholder .dish-info {
+      margin-bottom: var(--space-lg);
+    }
+
+    .build-placeholder .dish-name {
+      font-size: var(--text-xl);
+      font-weight: 700;
+      color: var(--color-text);
+    }
+
+    .build-placeholder .dish-category {
+      font-size: var(--text-sm);
+      color: var(--color-text-secondary);
+      text-transform: capitalize;
+      margin-top: var(--space-xs);
+    }
+
+    .build-placeholder .next-steps {
+      color: var(--color-text-secondary);
+      font-size: var(--text-sm);
+      line-height: 1.5;
+    }
+
+    /* Batch list items (for future stories) */
+    .batch-item {
+      padding: var(--space-md);
+      background: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-card);
+      margin-bottom: var(--space-sm);
+    }
+
+    .batch-item .batch-name {
+      font-weight: 600;
+    }
+
+    .batch-item .batch-remaining {
+      font-size: var(--text-sm);
+      color: var(--color-text-secondary);
+      margin-top: var(--space-xs);
+    }
+
+    .batch-item {
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      transition: transform 0.1s ease;
+    }
+
+    .batch-item:active {
+      background: var(--color-primary-light);
+      transform: scale(0.98);
+    }
+
+    .batch-detail-header {
+      background: var(--color-card);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-card);
+      padding: var(--space-md);
+      margin-bottom: var(--space-md);
+    }
+
+    .batch-remaining-large {
+      font-size: var(--text-lg);
+      font-weight: 700;
+      color: var(--color-text);
+    }
+
+    .portion-input-area {
+      margin-top: var(--space-md);
+    }
+
+    .portion-preview {
+      margin-top: var(--space-md);
+      min-height: 80px;
+    }
+
+    .portion-warning {
+      color: var(--color-warning);
+      font-size: var(--text-sm);
+      margin-top: var(--space-xs);
+      min-height: 20px;
+    }
+
+    .portion-error {
+      color: var(--color-error);
+      font-size: var(--text-sm);
+      margin-top: var(--space-xs);
+    }
+
+    .batch-depleted {
+      opacity: 0.6;
+    }
+
+    .plate-tare-area {
+      margin-bottom: var(--space-md);
+    }
+
+    .plate-tare-helper {
+      font-size: var(--text-sm);
+      color: var(--color-text-secondary);
+      margin-top: var(--space-xs);
+    }
+
+    .portion-history {
+      margin-top: var(--space-lg);
+    }
+
+    .portion-history-header {
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--color-text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding-bottom: var(--space-xs);
+      border-bottom: 1px solid var(--color-border);
+      margin-bottom: var(--space-sm);
+    }
+
+    .portion-history-item {
+      padding: var(--space-sm) 0;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .portion-history-item:last-child {
+      border-bottom: none;
+    }
+
+    .portion-history-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+
+    .portion-history-time {
+      font-size: var(--text-sm);
+      color: var(--color-text-secondary);
+    }
+
+    .portion-history-weight {
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--color-text);
+    }
+
+    .portion-history-macros {
+      font-size: var(--text-xs);
+      color: var(--color-text-secondary);
+      margin-top: 2px;
+    }
+
+    /* Back button in header */
+    .header-row {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      padding: var(--space-md) var(--space-md) var(--space-sm);
+    }
+
+    .btn-back {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      background: transparent;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: var(--text-lg);
+      color: var(--color-text);
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      flex-shrink: 0;
+    }
+
+    .btn-back:active {
+      background: var(--color-border);
+    }
+
+    .header-row .header-title {
+      font-size: var(--text-lg);
+      font-weight: 700;
+      color: var(--color-text);
+      flex: 1;
+    }
+
+    /* Vessel Weight Entry */
+    .vessel-entry {
+      text-align: center;
+      padding: var(--space-xl) var(--space-md);
+    }
+
+    .vessel-entry .vessel-prompt {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: var(--color-text);
+      margin-bottom: var(--space-lg);
+      line-height: 1.4;
+    }
+
+    .vessel-entry .input-group {
+      max-width: 200px;
+      margin: 0 auto var(--space-lg);
+    }
+
+    .vessel-info {
+      font-size: var(--text-sm);
+      color: var(--color-text-secondary);
+      padding: 0 var(--space-md) var(--space-sm);
+    }
+
+    .recipe-guide {
+      margin: 0 var(--space-md) var(--space-md);
+      padding: var(--space-sm) var(--space-md);
+      background: var(--color-surface);
+      border-radius: var(--radius-sm);
+      border: 1px dashed var(--color-border);
+    }
+    .recipe-guide-title {
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--color-text-secondary);
+      margin-bottom: var(--space-xs);
+    }
+    .recipe-guide-item {
+      padding: var(--space-xs) 0;
+      font-size: var(--text-sm);
+      color: var(--color-text);
+      border-bottom: 1px solid var(--color-border);
+    }
+    .recipe-guide-item:last-child {
+      border-bottom: none;
+    }
+    .recipe-guide-item-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .recipe-guide-item.added .recipe-guide-name {
+      color: var(--color-text-secondary);
+    }
+    .recipe-guide-weights {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      flex-shrink: 0;
+      margin-left: var(--space-sm);
+    }
+    .recipe-guide-new-weight {
+      font-weight: 600;
+      font-size: var(--text-sm);
+      color: var(--color-text);
+    }
+    .recipe-guide-last-weight {
+      font-size: var(--text-xs);
+      color: var(--color-text-secondary);
+    }
+    .recipe-guide-weight {
+      color: var(--color-text-secondary);
+      font-size: var(--text-xs);
+      flex-shrink: 0;
+      margin-left: var(--space-sm);
+    }
+    .recipe-guide-input-row {
+      display: flex;
+      align-items: center;
+      gap: var(--space-xs);
+      margin-top: var(--space-xs);
+    }
+    .recipe-guide-input {
+      width: 80px;
+      height: 36px;
+      font-size: var(--text-sm);
+      text-align: center;
+    }
+    .recipe-guide-add-btn {
+      height: 36px;
+      padding: 0 var(--space-md);
+      font-size: var(--text-sm);
+      flex-shrink: 0;
+      width: auto;
+    }
+
+    /* Build Screen — Ingredient Rows */
+    .build-ingredient-row {
+      display: flex;
+      align-items: center;
+      min-height: 56px;
+      padding: var(--space-sm) var(--space-md);
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .build-ingredient-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .build-ingredient-name-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+
+    .build-ingredient-name {
+      font-size: var(--text-md);
+      font-weight: 500;
+      color: var(--color-text);
+    }
+
+    .build-ingredient-weight {
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--color-text);
+      flex-shrink: 0;
+      margin-left: var(--space-sm);
+    }
+
+    .build-ingredient-macros {
+      font-size: var(--text-xs);
+      margin-top: 2px;
+    }
+
+    .build-ingredient-macros .macro-cal { color: var(--color-calories); }
+    .build-ingredient-macros .macro-p { color: var(--color-protein); }
+    .build-ingredient-macros .macro-c { color: var(--color-carbs); }
+    .build-ingredient-macros .macro-f { color: var(--color-fat); }
+
+    .btn-remove {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      background: transparent;
+      border: none;
+      color: var(--color-error);
+      font-size: var(--text-lg);
+      cursor: pointer;
+      flex-shrink: 0;
+      -webkit-tap-highlight-color: transparent;
+      border-radius: var(--radius-sm);
+    }
+
+    .btn-remove:active {
+      background: rgba(196, 87, 74, 0.1);
+    }
+
+    /* Inline Add Ingredient Button */
+    .btn-add-inline {
+      display: block;
+      width: fit-content;
+      margin: var(--space-md) auto;
+      min-height: 48px;
+      padding: var(--space-sm) var(--space-lg);
+      background: var(--color-primary);
+      color: #FFFFFF;
+      border: none;
+      border-radius: var(--radius-lg);
+      font-family: var(--font-family);
+      font-size: var(--text-md);
+      font-weight: 700;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      transition: background 0.15s;
+    }
+
+    .btn-add-inline:active {
+      background: var(--color-primary-dark);
+    }
+
+    .build-actions-inline {
+      text-align: center;
+    }
+
+    .btn-retare {
+      display: block;
+      width: fit-content;
+      margin: var(--space-sm) auto var(--space-md);
+      min-height: 44px;
+      padding: var(--space-sm) var(--space-lg);
+      background: transparent;
+      color: var(--color-undo);
+      border: 2px solid var(--color-undo);
+      border-radius: var(--radius-lg);
+      font-family: var(--font-family);
+      font-size: var(--text-sm);
+      font-weight: 600;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .btn-retare:active {
+      background: var(--color-undo);
+      color: #FFFFFF;
+    }
+
+    /* Running Totals Bar */
+    .running-totals {
+      text-align: center;
+      border-top: 1px solid var(--color-border);
+      background: var(--color-card);
+    }
+
+    .running-totals .total-weight {
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--color-text);
+      margin-bottom: var(--space-xs);
+    }
+
+    .running-totals .macro-display {
+      margin-bottom: 0;
+    }
+
+    .running-totals .macro-headline {
+      font-size: var(--text-lg);
+    }
+
+    /* Reading Entry View */
+    .reading-entry {
+      padding: var(--space-md) 0;
+      text-align: center;
+    }
+
+    .reading-entry .reading-ingredient-name {
+      font-size: var(--text-lg);
+      font-weight: 700;
+      color: var(--color-text);
+      margin-bottom: var(--space-lg);
+    }
+
+    .reading-entry .reading-prompt {
+      font-size: var(--text-md);
+      color: var(--color-text-secondary);
+      margin-bottom: var(--space-md);
+    }
+
+    .reading-entry .input-group {
+      max-width: 200px;
+      margin: 0 auto var(--space-sm);
+    }
+
+    .reading-entry .reading-reference {
+      font-size: var(--text-sm);
+      color: var(--color-text-secondary);
+      margin-bottom: var(--space-lg);
+    }
+
+    .reading-entry .form-actions {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+
+    /* Overlay & Bottom Sheet */
+    .overlay-scrim {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(61, 50, 48, 0.5);
+      z-index: 100;
+    }
+
+    .overlay-scrim.open {
+      display: block;
+    }
+
+    .bottom-sheet {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      max-height: 85vh;
+      max-width: 480px;
+      margin: 0 auto;
+      background: var(--color-card);
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+      box-shadow: 0 -4px 20px rgba(61, 50, 48, 0.15);
+      z-index: 101;
+      display: flex;
+      flex-direction: column;
+      transform: translateY(100%);
+      transition: transform 0.25s ease-out;
+    }
+
+    .bottom-sheet.open {
+      transform: translateY(0);
+    }
+
+    .sheet-handle {
+      width: 40px;
+      height: 4px;
+      background: var(--color-border);
+      border-radius: 2px;
+      margin: var(--space-sm) auto;
+      flex-shrink: 0;
+    }
+
+    .sheet-header {
+      padding: 0 var(--space-md) var(--space-sm);
+      flex-shrink: 0;
+    }
+
+    #picker-view,
+    #custom-form-view,
+    #reading-entry-view {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      overflow: hidden;
+      min-height: 0;
+    }
+
+    .sheet-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0 var(--space-md) var(--space-md);
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* Ingredient Picker Rows */
+    .picker-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      min-height: 56px;
+      padding: var(--space-sm) var(--space-md);
+      border-bottom: 1px solid var(--color-border);
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .picker-row:active {
+      background: var(--color-primary-light);
+    }
+
+    .picker-row-name {
+      font-size: var(--text-md);
+      color: var(--color-text);
+    }
+
+    .picker-row-name.custom-name {
+      font-style: italic;
+    }
+
+    .picker-row-kcal {
+      font-size: var(--text-sm);
+      color: var(--color-text-secondary);
+      flex-shrink: 0;
+      margin-left: var(--space-sm);
+    }
+
+    .picker-add-custom {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      min-height: 56px;
+      padding: var(--space-sm) var(--space-md);
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      color: var(--color-primary);
+      font-weight: 600;
+      font-size: var(--text-md);
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .picker-add-custom:active {
+      background: var(--color-primary-light);
+    }
+
+    /* Custom Ingredient Form */
+    .custom-form {
+      padding: var(--space-sm) 0;
+    }
+
+    .custom-form-header {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      margin-bottom: var(--space-md);
+    }
+
+    .custom-form-title {
+      font-size: var(--text-lg);
+      font-weight: 700;
+      color: var(--color-text);
+    }
+
+    .custom-form .form-field {
+      margin-bottom: var(--space-md);
+    }
+
+    .custom-form .form-field label {
+      display: block;
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--color-text-secondary);
+      margin-bottom: var(--space-xs);
+    }
+
+    .custom-form .form-actions {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+      margin-top: var(--space-lg);
+    }
+
+    .form-error {
+      color: var(--color-error);
+      font-size: var(--text-sm);
+      margin-top: var(--space-xs);
+      display: none;
+    }
+
+    .form-error.visible {
+      display: block;
+    }
+
+    /* Ready to Cook button in fixed bottom bar */
+    .btn-ready-cook {
+      margin-top: var(--space-sm);
+    }
+
+    /* Cook mode summary card */
+    .cook-summary-card {
+      background: var(--color-card);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-card);
+      padding: var(--space-md);
+      margin-bottom: var(--space-md);
+    }
+
+    .cook-summary-card .summary-label {
+      font-size: var(--text-sm);
+      color: var(--color-text-secondary);
+      margin-bottom: var(--space-xs);
+    }
+
+    .cook-summary-card .summary-weight {
+      font-size: var(--text-lg);
+      font-weight: 700;
+      color: var(--color-text);
+    }
+
+    /* Cook complete confirmation */
+    .cook-complete-success {
+      text-align: center;
+      padding: var(--space-lg) var(--space-md);
+    }
+
+    .cook-complete-success .success-icon {
+      font-size: 48px;
+      margin-bottom: var(--space-sm);
+    }
+
+    .cook-complete-success .success-title {
+      font-size: var(--text-xl);
+      font-weight: 700;
+      color: var(--color-text);
+      margin-bottom: var(--space-xs);
+    }
+
+    .cook-complete-success .success-subtitle {
+      font-size: var(--text-md);
+      color: var(--color-text-secondary);
+      margin-bottom: var(--space-lg);
+    }
+
+    .density-section {
+      margin-top: var(--space-md);
+      padding-top: var(--space-md);
+      border-top: 1px solid var(--color-border);
+    }
+
+    .density-section .density-label {
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--color-text-secondary);
+      text-transform: uppercase;
+      margin-bottom: var(--space-sm);
+    }
+
+    .density-row {
+      display: flex;
+      justify-content: space-around;
+      text-align: center;
+    }
+
+    .density-row .density-item {
+      flex: 1;
+    }
+
+    .density-row .density-value {
+      font-size: var(--text-md);
+      font-weight: 600;
+    }
+
+    .density-row .density-unit {
+      font-size: var(--text-xs);
+      color: var(--color-text-secondary);
+    }
+
+    .cook-prompt {
+      font-size: var(--text-md);
+      color: var(--color-text);
+      margin-bottom: var(--space-md);
+      line-height: 1.5;
+    }
+
+    .cook-hint {
+      font-size: var(--text-sm);
+      color: var(--color-text-secondary);
+      margin-bottom: var(--space-md);
+    }
+
+    .btn-link-back {
+      display: block;
+      width: fit-content;
+      margin: var(--space-md) auto 0;
+      padding: var(--space-sm) var(--space-md);
+      background: none;
+      border: none;
+      color: var(--color-undo);
+      font-family: var(--font-family);
+      font-size: var(--text-sm);
+      font-weight: 600;
+      cursor: pointer;
+      min-height: var(--tap-target-min);
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Focus states for keyboard navigation */
+    .btn-primary:focus-visible,
+    .btn-secondary:focus-visible,
+    .btn-add-inline:focus-visible,
+    .btn-retare:focus-visible,
+    .btn-link-back:focus-visible,
+    .unit-cycle:focus-visible,
+    .category-option:focus-visible,
+    .btn-back:focus-visible,
+    .batch-item:focus-visible {
+      outline: 2px solid var(--color-primary);
+      outline-offset: 2px;
+    }
+
+    .input-numeric:focus-visible,
+    .input-text:focus-visible {
+      border-color: var(--color-primary);
+      outline: 2px solid var(--color-primary);
+      outline-offset: 2px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        transition: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+
+    <div class="header">
+      <h1>Batchly</h1>
+      <p class="tagline">Macro tracking for home-cooked meals</p>
+    </div>
+
+    <!-- HOME SCREEN -->
+    <div id="screen-home" class="screen active">
+      <div class="screen-content">
+        <h2 class="section-header">Active Batches</h2>
+        <div id="active-batches-list">
+          <div class="empty-state">
+            <div class="empty-icon">&#x1F372;</div>
+            <p>Your kitchen is ready &mdash; let's build your first dish!</p>
+          </div>
+        </div>
+
+        <h2 class="section-header">Saved Dishes</h2>
+        <div id="saved-templates-list">
+          <div class="empty-state">
+            <p>Dishes you build will be saved here for easy re-cooking.</p>
+          </div>
+        </div>
+      </div>
+      <div class="screen-actions">
+        <button class="btn-primary" id="btn-new-dish">Start a New Dish</button>
+      </div>
+    </div>
+
+    <!-- CATEGORY SELECTION SCREEN -->
+    <div id="screen-category-select" class="screen">
+      <div class="header-row">
+        <button class="btn-back" id="btn-back-category" aria-label="Back">&larr;</button>
+        <h2 class="header-title">Choose a Category</h2>
+      </div>
+      <div class="screen-content">
+        <div class="category-grid" role="radiogroup" aria-label="Dish category">
+          <button class="category-option" data-category="casserole" role="radio" aria-checked="false">
+            <span class="category-emoji">&#x1F958;</span>
+            Casserole
+          </button>
+          <button class="category-option" data-category="soup" role="radio" aria-checked="false">
+            <span class="category-emoji">&#x1F35C;</span>
+            Soup
+          </button>
+          <button class="category-option" data-category="stew" role="radio" aria-checked="false">
+            <span class="category-emoji">&#x1F372;</span>
+            Stew
+          </button>
+          <button class="category-option" data-category="chili" role="radio" aria-checked="false">
+            <span class="category-emoji">&#x1F336;&#xFE0F;</span>
+            Chili
+          </button>
+          <button class="category-option" data-category="other" role="radio" aria-checked="false">
+            <span class="category-emoji">&#x1F373;</span>
+            Other
+          </button>
+        </div>
+
+        <div class="name-prompt" id="name-prompt" style="display:none;">
+          <label for="dish-name-input">Name your dish</label>
+          <input type="text" id="dish-name-input" class="input-text" placeholder="" autocomplete="off" maxlength="100">
+          <p class="hint">Leave blank for a default name</p>
+        </div>
+      </div>
+      <div class="screen-actions" id="category-actions" style="display:none;">
+        <button class="btn-primary" id="btn-start-build">Let's Cook</button>
+      </div>
+    </div>
+
+    <!-- BUILD SCREEN -->
+    <div id="screen-build" class="screen">
+      <div class="header-row">
+        <button class="btn-back" id="btn-back-build" aria-label="Back">&larr;</button>
+        <h2 class="header-title" id="build-title">Building...</h2>
+      </div>
+      <div class="screen-content">
+        <div id="build-screen-body"></div>
+      </div>
+      <div class="screen-actions" id="build-totals-bar" style="display:none;">
+        <div class="running-totals">
+          <div class="total-weight" id="totals-weight"></div>
+          <div class="macro-display">
+            <div class="macro-headline" id="totals-kcal"></div>
+            <div class="macro-headline-label">calories</div>
+            <div class="macro-row">
+              <div class="macro-item macro-protein">
+                <div class="macro-value" id="totals-protein"></div>
+                <div class="macro-label">protein</div>
+              </div>
+              <div class="macro-item macro-carbs">
+                <div class="macro-value" id="totals-carbs"></div>
+                <div class="macro-label">carbs</div>
+              </div>
+              <div class="macro-item macro-fat">
+                <div class="macro-value" id="totals-fat"></div>
+                <div class="macro-label">fat</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button class="btn-primary btn-ready-cook" id="btn-ready-cook" style="display:none;">Ready to Cook</button>
+      </div>
+    </div>
+
+    <!-- COOK COMPLETE SCREEN -->
+    <div id="screen-cook-complete" class="screen">
+      <div class="header-row">
+        <h2 class="header-title" id="complete-title">Dish Complete!</h2>
+      </div>
+      <div class="screen-content">
+        <div id="cook-complete-body"></div>
+      </div>
+      <div class="screen-actions">
+        <button class="btn-primary" id="btn-back-to-kitchen">Back to Kitchen</button>
+      </div>
+    </div>
+
+    <!-- BATCH DETAIL / PORTION LOGGING SCREEN -->
+    <div id="screen-batch-detail" class="screen">
+      <div class="header-row">
+        <button class="btn-back" id="btn-back-batch-detail">&larr;</button>
+        <h2 class="header-title" id="batch-detail-title">Batch Detail</h2>
+      </div>
+      <div class="screen-content">
+        <div id="batch-detail-body"></div>
+      </div>
+      <div class="screen-actions" id="batch-detail-actions">
+        <button class="btn-primary" id="btn-log-portion">Log Portion</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Ingredient Picker Overlay -->
+  <div class="overlay-scrim" id="ingredient-overlay-scrim"></div>
+  <div class="bottom-sheet" id="ingredient-bottom-sheet">
+    <div class="sheet-handle"></div>
+
+    <!-- Picker View -->
+    <div id="picker-view">
+      <div class="sheet-header">
+        <input type="text" id="ingredient-search" class="input-text" placeholder="Search ingredients..." autocomplete="off">
+      </div>
+      <div class="sheet-body">
+        <div class="picker-add-custom" id="btn-show-custom-form">+ Can't find it? Add your own</div>
+        <div id="ingredient-picker-list"></div>
+      </div>
+    </div>
+
+    <!-- Reading Entry View -->
+    <div id="reading-entry-view" style="display:none;">
+      <div class="sheet-body">
+        <div class="reading-entry">
+          <div class="reading-ingredient-name" id="reading-ingredient-name"></div>
+          <div class="reading-prompt">What does your scale read now?</div>
+          <div class="input-group">
+            <input type="text" inputmode="decimal" id="reading-input" class="input-numeric" placeholder="0">
+            <span class="input-suffix unit-cycle" id="reading-unit-suffix">g</span>
+          </div>
+          <div class="reading-reference" id="reading-reference"></div>
+          <div class="form-error" id="reading-error">Reading must be higher.</div>
+          <div class="form-actions">
+            <button class="btn-primary" id="btn-confirm-reading">Add</button>
+            <button class="btn-secondary" id="btn-cancel-reading">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Custom Ingredient Form View -->
+    <div id="custom-form-view" style="display:none;">
+      <div class="sheet-body">
+        <div class="custom-form">
+          <div class="custom-form-header">
+            <button class="btn-back" id="btn-custom-back" aria-label="Back">&larr;</button>
+            <span class="custom-form-title">Add Custom Ingredient</span>
+          </div>
+          <div class="form-field">
+            <label for="custom-name">Ingredient Name</label>
+            <input type="text" id="custom-name" class="input-text" placeholder="e.g. Turkey Sausage" autocomplete="off" maxlength="100">
+          </div>
+          <div class="form-field">
+            <label for="custom-kcal">Calories per 100g</label>
+            <div class="input-group">
+              <input type="text" inputmode="decimal" id="custom-kcal" class="input-numeric" placeholder="0">
+              <span class="input-suffix">kcal</span>
+            </div>
+          </div>
+          <div class="form-field">
+            <label for="custom-protein">Protein per 100g</label>
+            <div class="input-group">
+              <input type="text" inputmode="decimal" id="custom-protein" class="input-numeric" placeholder="0">
+              <span class="input-suffix">g</span>
+            </div>
+          </div>
+          <div class="form-field">
+            <label for="custom-carbs">Carbs per 100g</label>
+            <div class="input-group">
+              <input type="text" inputmode="decimal" id="custom-carbs" class="input-numeric" placeholder="0">
+              <span class="input-suffix">g</span>
+            </div>
+          </div>
+          <div class="form-field">
+            <label for="custom-fat">Fat per 100g</label>
+            <div class="input-group">
+              <input type="text" inputmode="decimal" id="custom-fat" class="input-numeric" placeholder="0">
+              <span class="input-suffix">g</span>
+            </div>
+          </div>
+          <div class="form-error" id="custom-form-error">Please fill in all fields with valid values.</div>
+          <div class="form-actions">
+            <button class="btn-primary" id="btn-save-custom">Save &amp; Add to Dish</button>
+            <button class="btn-secondary" id="btn-cancel-custom">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      'use strict';
+
+      var STORAGE_KEY = 'batchly_data';
+
+      function generateId() {
+        if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+          return crypto.randomUUID();
+        }
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+          var r = Math.random() * 16 | 0;
+          return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+        });
+      }
+
+      var CURATED_INGREDIENTS = [
+        {id:'ground-beef-80-20',name:'Ground Beef (80/20)',category:'proteins',kcalPer100g:254,proteinPer100g:17.2,carbsPer100g:0,fatPer100g:20},
+        {id:'ground-beef-90-10',name:'Ground Beef (90/10)',category:'proteins',kcalPer100g:176,proteinPer100g:20,carbsPer100g:0,fatPer100g:10},
+        {id:'ground-turkey',name:'Ground Turkey',category:'proteins',kcalPer100g:170,proteinPer100g:21,carbsPer100g:0,fatPer100g:9.4},
+        {id:'ground-pork',name:'Ground Pork',category:'proteins',kcalPer100g:263,proteinPer100g:17,carbsPer100g:0,fatPer100g:21},
+        {id:'chicken-breast',name:'Chicken Breast',category:'proteins',kcalPer100g:165,proteinPer100g:31,carbsPer100g:0,fatPer100g:3.6},
+        {id:'chicken-thigh',name:'Chicken Thigh',category:'proteins',kcalPer100g:209,proteinPer100g:26,carbsPer100g:0,fatPer100g:10.9},
+        {id:'pork-sausage',name:'Pork Sausage',category:'proteins',kcalPer100g:301,proteinPer100g:18,carbsPer100g:0,fatPer100g:25},
+        {id:'italian-sausage',name:'Italian Sausage',category:'proteins',kcalPer100g:304,proteinPer100g:14,carbsPer100g:2,fatPer100g:26},
+        {id:'bacon',name:'Bacon',category:'proteins',kcalPer100g:541,proteinPer100g:37,carbsPer100g:1.4,fatPer100g:42},
+        {id:'ham-diced',name:'Ham (diced)',category:'proteins',kcalPer100g:145,proteinPer100g:21,carbsPer100g:1.5,fatPer100g:5.5},
+        {id:'shrimp',name:'Shrimp',category:'proteins',kcalPer100g:99,proteinPer100g:24,carbsPer100g:0.2,fatPer100g:0.3},
+        {id:'kidney-beans',name:'Kidney Beans',category:'beans',kcalPer100g:127,proteinPer100g:8.7,carbsPer100g:22.8,fatPer100g:0.5},
+        {id:'black-beans',name:'Black Beans',category:'beans',kcalPer100g:132,proteinPer100g:8.9,carbsPer100g:23.7,fatPer100g:0.5},
+        {id:'pinto-beans',name:'Pinto Beans',category:'beans',kcalPer100g:143,proteinPer100g:9,carbsPer100g:26.2,fatPer100g:0.6},
+        {id:'chickpeas',name:'Chickpeas',category:'beans',kcalPer100g:164,proteinPer100g:8.9,carbsPer100g:27.4,fatPer100g:2.6},
+        {id:'lentils',name:'Lentils (cooked)',category:'beans',kcalPer100g:116,proteinPer100g:9,carbsPer100g:20,fatPer100g:0.4},
+        {id:'navy-beans',name:'Navy Beans',category:'beans',kcalPer100g:140,proteinPer100g:8.2,carbsPer100g:26.1,fatPer100g:0.6},
+        {id:'cannellini-beans',name:'Cannellini Beans',category:'beans',kcalPer100g:139,proteinPer100g:9.7,carbsPer100g:25.1,fatPer100g:0.3},
+        {id:'onion',name:'Onion',category:'vegetables',kcalPer100g:40,proteinPer100g:1.1,carbsPer100g:9.3,fatPer100g:0.1},
+        {id:'garlic',name:'Garlic (minced)',category:'vegetables',kcalPer100g:149,proteinPer100g:6.4,carbsPer100g:33.1,fatPer100g:0.5},
+        {id:'celery',name:'Celery',category:'vegetables',kcalPer100g:16,proteinPer100g:0.7,carbsPer100g:3,fatPer100g:0.2},
+        {id:'carrots',name:'Carrots',category:'vegetables',kcalPer100g:41,proteinPer100g:0.9,carbsPer100g:9.6,fatPer100g:0.2},
+        {id:'bell-pepper',name:'Bell Pepper',category:'vegetables',kcalPer100g:31,proteinPer100g:1,carbsPer100g:6,fatPer100g:0.3},
+        {id:'potato',name:'Potato',category:'vegetables',kcalPer100g:77,proteinPer100g:2,carbsPer100g:17,fatPer100g:0.1},
+        {id:'sweet-potato',name:'Sweet Potato',category:'vegetables',kcalPer100g:86,proteinPer100g:1.6,carbsPer100g:20.1,fatPer100g:0.1},
+        {id:'corn-canned',name:'Corn (canned)',category:'vegetables',kcalPer100g:64,proteinPer100g:2.1,carbsPer100g:14.4,fatPer100g:0.8},
+        {id:'green-beans',name:'Green Beans',category:'vegetables',kcalPer100g:31,proteinPer100g:1.8,carbsPer100g:7,fatPer100g:0.1},
+        {id:'zucchini',name:'Zucchini',category:'vegetables',kcalPer100g:17,proteinPer100g:1.2,carbsPer100g:3.1,fatPer100g:0.3},
+        {id:'mushrooms',name:'Mushrooms',category:'vegetables',kcalPer100g:22,proteinPer100g:3.1,carbsPer100g:3.3,fatPer100g:0.3},
+        {id:'spinach',name:'Spinach',category:'vegetables',kcalPer100g:23,proteinPer100g:2.9,carbsPer100g:3.6,fatPer100g:0.4},
+        {id:'kale',name:'Kale',category:'vegetables',kcalPer100g:49,proteinPer100g:4.3,carbsPer100g:8.8,fatPer100g:0.9},
+        {id:'broccoli',name:'Broccoli',category:'vegetables',kcalPer100g:34,proteinPer100g:2.8,carbsPer100g:6.6,fatPer100g:0.4},
+        {id:'cabbage',name:'Cabbage',category:'vegetables',kcalPer100g:25,proteinPer100g:1.3,carbsPer100g:5.8,fatPer100g:0.1},
+        {id:'tomato-fresh',name:'Tomato (fresh)',category:'vegetables',kcalPer100g:18,proteinPer100g:0.9,carbsPer100g:3.9,fatPer100g:0.2},
+        {id:'jalapeno',name:'Jalapeño',category:'vegetables',kcalPer100g:29,proteinPer100g:0.9,carbsPer100g:6.5,fatPer100g:0.4},
+        {id:'diced-tomatoes',name:'Diced Tomatoes (canned)',category:'canned',kcalPer100g:17,proteinPer100g:0.8,carbsPer100g:3.6,fatPer100g:0.1},
+        {id:'crushed-tomatoes',name:'Crushed Tomatoes (canned)',category:'canned',kcalPer100g:29,proteinPer100g:1.3,carbsPer100g:5.8,fatPer100g:0.3},
+        {id:'tomato-paste',name:'Tomato Paste',category:'canned',kcalPer100g:82,proteinPer100g:4.3,carbsPer100g:18.9,fatPer100g:0.5},
+        {id:'tomato-sauce',name:'Tomato Sauce',category:'canned',kcalPer100g:29,proteinPer100g:1.3,carbsPer100g:5.4,fatPer100g:0.2},
+        {id:'coconut-milk',name:'Coconut Milk (canned)',category:'canned',kcalPer100g:197,proteinPer100g:2.3,carbsPer100g:2.8,fatPer100g:21.3},
+        {id:'chicken-broth',name:'Chicken Broth',category:'canned',kcalPer100g:4,proteinPer100g:0.5,carbsPer100g:0.3,fatPer100g:0.1},
+        {id:'beef-broth',name:'Beef Broth',category:'canned',kcalPer100g:7,proteinPer100g:1.1,carbsPer100g:0.1,fatPer100g:0.2},
+        {id:'vegetable-broth',name:'Vegetable Broth',category:'canned',kcalPer100g:6,proteinPer100g:0.2,carbsPer100g:1.1,fatPer100g:0.1},
+        {id:'white-rice',name:'White Rice (cooked)',category:'grains',kcalPer100g:130,proteinPer100g:2.7,carbsPer100g:28.2,fatPer100g:0.3},
+        {id:'brown-rice',name:'Brown Rice (cooked)',category:'grains',kcalPer100g:112,proteinPer100g:2.3,carbsPer100g:23.5,fatPer100g:0.8},
+        {id:'pasta',name:'Pasta (cooked)',category:'grains',kcalPer100g:131,proteinPer100g:5,carbsPer100g:25.4,fatPer100g:1.1},
+        {id:'egg-noodles',name:'Egg Noodles (cooked)',category:'grains',kcalPer100g:138,proteinPer100g:4.5,carbsPer100g:25.2,fatPer100g:2.1},
+        {id:'quinoa',name:'Quinoa (cooked)',category:'grains',kcalPer100g:120,proteinPer100g:4.4,carbsPer100g:21.3,fatPer100g:1.9},
+        {id:'barley',name:'Barley (cooked)',category:'grains',kcalPer100g:123,proteinPer100g:2.3,carbsPer100g:28.2,fatPer100g:0.4},
+        {id:'cheddar-cheese',name:'Cheddar Cheese',category:'dairy',kcalPer100g:403,proteinPer100g:24.9,carbsPer100g:1.3,fatPer100g:33.1},
+        {id:'mozzarella',name:'Mozzarella',category:'dairy',kcalPer100g:280,proteinPer100g:28,carbsPer100g:3.1,fatPer100g:17.1},
+        {id:'cream-cheese',name:'Cream Cheese',category:'dairy',kcalPer100g:342,proteinPer100g:6.2,carbsPer100g:5.5,fatPer100g:34.2},
+        {id:'sour-cream',name:'Sour Cream',category:'dairy',kcalPer100g:198,proteinPer100g:2.4,carbsPer100g:4.6,fatPer100g:19.4},
+        {id:'heavy-cream',name:'Heavy Cream',category:'dairy',kcalPer100g:340,proteinPer100g:2.1,carbsPer100g:2.8,fatPer100g:36.1},
+        {id:'butter',name:'Butter',category:'dairy',kcalPer100g:717,proteinPer100g:0.9,carbsPer100g:0.1,fatPer100g:81.1},
+        {id:'eggs',name:'Eggs',category:'dairy',kcalPer100g:155,proteinPer100g:13,carbsPer100g:1.1,fatPer100g:11},
+        {id:'whole-milk',name:'Whole Milk',category:'dairy',kcalPer100g:61,proteinPer100g:3.2,carbsPer100g:4.8,fatPer100g:3.3},
+        {id:'olive-oil',name:'Olive Oil',category:'oils',kcalPer100g:884,proteinPer100g:0,carbsPer100g:0,fatPer100g:100},
+        {id:'vegetable-oil',name:'Vegetable Oil',category:'oils',kcalPer100g:884,proteinPer100g:0,carbsPer100g:0,fatPer100g:100},
+        {id:'coconut-oil',name:'Coconut Oil',category:'oils',kcalPer100g:862,proteinPer100g:0,carbsPer100g:0,fatPer100g:100},
+        {id:'flour',name:'Flour (all-purpose)',category:'pantry',kcalPer100g:364,proteinPer100g:10.3,carbsPer100g:76.3,fatPer100g:1},
+        {id:'sugar',name:'Sugar',category:'pantry',kcalPer100g:387,proteinPer100g:0,carbsPer100g:100,fatPer100g:0},
+        {id:'honey',name:'Honey',category:'pantry',kcalPer100g:304,proteinPer100g:0.3,carbsPer100g:82.4,fatPer100g:0},
+        {id:'breadcrumbs',name:'Breadcrumbs',category:'pantry',kcalPer100g:395,proteinPer100g:13.4,carbsPer100g:71.8,fatPer100g:5.3}
+      ];
+
+      var UNIT_CONFIG = {
+        g:  { factor: 1,       decimals: 0, label: 'g'  },
+        oz: { factor: 28.3495, decimals: 1, label: 'oz' },
+        lb: { factor: 453.592, decimals: 2, label: 'lb' },
+        kg: { factor: 1000,    decimals: 2, label: 'kg' }
+      };
+      var UNIT_ORDER = ['g', 'oz', 'lb', 'kg'];
+
+      function getUnitLabel() {
+        return UNIT_CONFIG[state ? state.settings.weightUnit || 'g' : 'g'].label;
+      }
+
+      function toGrams(value) {
+        var unit = state.settings.weightUnit || 'g';
+        return value * UNIT_CONFIG[unit].factor;
+      }
+
+      function fromGrams(grams) {
+        var unit = state.settings.weightUnit || 'g';
+        return grams / UNIT_CONFIG[unit].factor;
+      }
+
+      function formatWeight(grams) {
+        var unit = state.settings.weightUnit || 'g';
+        var cfg = UNIT_CONFIG[unit];
+        var val = grams / cfg.factor;
+        if (cfg.decimals === 0) {
+          return Math.round(val).toLocaleString() + cfg.label;
+        }
+        return val.toFixed(cfg.decimals) + cfg.label;
+      }
+
+      function defaultState() {
+        return {
+          ingredients: [],
+          templates: [],
+          batches: [],
+          activeBuild: null,
+          settings: { plateTare: null, weightUnit: 'g' }
+        };
+      }
+
+      function loadState() {
+        try {
+          var raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return defaultState();
+          var parsed = JSON.parse(raw);
+          var base = defaultState();
+          base.ingredients = parsed.ingredients || [];
+          base.templates = parsed.templates || [];
+          base.batches = parsed.batches || [];
+          base.activeBuild = parsed.activeBuild || null;
+          if (base.activeBuild && !Array.isArray(base.activeBuild.ingredients)) {
+            base.activeBuild.ingredients = [];
+          }
+          if (parsed.settings) {
+            base.settings.plateTare = parsed.settings.plateTare != null ? parsed.settings.plateTare : null;
+            base.settings.weightUnit = parsed.settings.weightUnit || 'g';
+          }
+          return base;
+        } catch (e) {
+          return defaultState();
+        }
+      }
+
+      function saveState() {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        } catch (e) {
+          showSaveWarning();
+        }
+      }
+
+      var saveWarningTimeout = null;
+      function showSaveWarning() {
+        var existing = document.getElementById('save-warning');
+        if (existing) existing.remove();
+        var el = document.createElement('div');
+        el.id = 'save-warning';
+        el.setAttribute('role', 'alert');
+        el.style.cssText = 'position:fixed;top:0;left:0;right:0;padding:12px 16px;background:var(--color-warning);color:#fff;font-size:14px;font-weight:600;text-align:center;z-index:200;';
+        el.textContent = 'Unable to save — your browser storage may be full or disabled.';
+        document.body.appendChild(el);
+        clearTimeout(saveWarningTimeout);
+        saveWarningTimeout = setTimeout(function() { el.remove(); }, 5000);
+      }
+
+      var state = loadState();
+      var selectedCategory = null;
+      var pendingIngredient = null;
+      var currentBatchId = null;
+
+      // Screen navigation
+      function showScreen(id) {
+        var screens = document.querySelectorAll('.screen');
+        for (var i = 0; i < screens.length; i++) {
+          screens[i].classList.remove('active');
+        }
+        var target = document.getElementById(id);
+        if (target) target.classList.add('active');
+
+        var appHeader = document.querySelector('.header');
+        if (appHeader) {
+          appHeader.style.display = (id === 'screen-home') ? '' : 'none';
+        }
+
+        var focusTarget = target && (target.querySelector('h2, .header-title') || target.querySelector('.btn-primary'));
+        if (focusTarget) {
+          focusTarget.setAttribute('tabindex', '-1');
+          focusTarget.focus({ preventScroll: true });
+        }
+      }
+
+      function cycleWeightUnit() {
+        var current = state.settings.weightUnit || 'g';
+        var idx = UNIT_ORDER.indexOf(current);
+        state.settings.weightUnit = UNIT_ORDER[(idx + 1) % UNIT_ORDER.length];
+        saveState();
+        rerenderCurrentContent();
+      }
+
+      function rerenderCurrentContent() {
+        var readingView = document.getElementById('reading-entry-view');
+        if (readingView && readingView.style.display !== 'none' && pendingIngredient) {
+          showReadingEntry();
+          return;
+        }
+        var batchDetailScreen = document.getElementById('screen-batch-detail');
+        if (batchDetailScreen && batchDetailScreen.classList.contains('active')) {
+          renderBatchDetail();
+          return;
+        }
+        var buildScreen = document.getElementById('screen-build');
+        if (buildScreen && buildScreen.classList.contains('active')) {
+          renderBuildScreen();
+          return;
+        }
+        var homeScreen = document.getElementById('screen-home');
+        if (homeScreen && homeScreen.classList.contains('active')) {
+          renderHome();
+          renderContinueBanner();
+        }
+      }
+
+      function renderHome() {
+        var batchList = document.getElementById('active-batches-list');
+        var activeBatches = state.batches.filter(function(b) { return b.remainingWeight > 0; });
+        if (activeBatches.length === 0) {
+          batchList.innerHTML =
+            '<div class="empty-state">' +
+              '<div class="empty-icon">&#x1F372;</div>' +
+              '<p>Your kitchen is ready &mdash; let\'s build your first dish!</p>' +
+            '</div>';
+        } else {
+          var html = '';
+          for (var i = 0; i < activeBatches.length; i++) {
+            var b = activeBatches[i];
+            html +=
+              '<div class="batch-item" data-batch-id="' + b.id + '">' +
+                '<div class="batch-name">' + escapeHtml(b.name) + '</div>' +
+                '<div class="batch-remaining">' + formatWeight(b.remainingWeight) + ' remaining</div>' +
+              '</div>';
+          }
+          batchList.innerHTML = html;
+          var batchItems = batchList.querySelectorAll('.batch-item[data-batch-id]');
+          for (var k = 0; k < batchItems.length; k++) {
+            batchItems[k].addEventListener('click', (function(batchId) {
+              return function() { openBatchDetail(batchId); };
+            })(batchItems[k].getAttribute('data-batch-id')));
+          }
+        }
+
+        var templateList = document.getElementById('saved-templates-list');
+        if (state.templates.length === 0) {
+          templateList.innerHTML =
+            '<div class="empty-state">' +
+              '<p>Dishes you build will be saved here for easy re-cooking.</p>' +
+            '</div>';
+        } else {
+          var thtml = '';
+          for (var j = 0; j < state.templates.length; j++) {
+            var t = state.templates[j];
+            thtml +=
+              '<div class="batch-item" data-template-id="' + t.id + '">' +
+                '<div class="batch-name">' + escapeHtml(t.name) + '</div>' +
+                '<div class="batch-remaining" style="text-transform:capitalize;">' + escapeHtml(t.category) + ' &middot; Tap to cook again</div>' +
+              '</div>';
+          }
+          templateList.innerHTML = thtml;
+          var templateItems = templateList.querySelectorAll('.batch-item[data-template-id]');
+          for (var tk = 0; tk < templateItems.length; tk++) {
+            templateItems[tk].addEventListener('click', (function(templateId) {
+              return function() { startCookAgain(templateId); };
+            })(templateItems[tk].getAttribute('data-template-id')));
+          }
+        }
+      }
+
+      function startCookAgain(templateId) {
+        var template = null;
+        for (var i = 0; i < state.templates.length; i++) {
+          if (state.templates[i].id === templateId) {
+            template = state.templates[i];
+            break;
+          }
+        }
+        if (!template) return;
+
+        state.activeBuild = {
+          id: generateId(),
+          name: template.name,
+          category: template.category,
+          vesselWeight: null,
+          ingredients: [],
+          templateIngredients: (template.ingredients || []).map(function(ing) {
+            return {
+              id: ing.id, name: ing.name, weightGrams: ing.weightGrams,
+              kcalPer100g: ing.kcalPer100g, proteinPer100g: ing.proteinPer100g,
+              carbsPer100g: ing.carbsPer100g, fatPer100g: ing.fatPer100g,
+              isCustom: ing.isCustom
+            };
+          }),
+          retareOffset: 0,
+          retareCount: 0,
+          lastCumulativeReading: 0,
+          cookMode: false,
+          createdAt: new Date().toISOString()
+        };
+        saveState();
+        renderBuildScreen();
+        showScreen('screen-build');
+      }
+
+      function addTemplateIngredient(tplIndex) {
+        if (!state.activeBuild || !state.activeBuild.templateIngredients) return;
+        var ref = state.activeBuild.templateIngredients[tplIndex];
+        if (!ref) return;
+
+        var input = document.getElementById('tpl-input-' + tplIndex);
+        if (!input) return;
+        var val = parseFloat(input.value);
+        if (isNaN(val) || !isFinite(val) || val <= 0) return;
+
+        var weightGrams = toGrams(val);
+        var ingredient = {
+          id: ref.id,
+          name: ref.name,
+          kcalPer100g: ref.kcalPer100g,
+          proteinPer100g: ref.proteinPer100g,
+          carbsPer100g: ref.carbsPer100g,
+          fatPer100g: ref.fatPer100g,
+          isCustom: ref.isCustom || false,
+          weightGrams: weightGrams,
+          cumulativeReading: null,
+          kcal: weightGrams * ref.kcalPer100g / 100,
+          protein: weightGrams * ref.proteinPer100g / 100,
+          carbs: weightGrams * ref.carbsPer100g / 100,
+          fat: weightGrams * ref.fatPer100g / 100
+        };
+
+        state.activeBuild.ingredients.push(ingredient);
+        state.activeBuild.lastCumulativeReading += weightGrams;
+        saveState();
+        renderBuildScreen();
+      }
+
+      function escapeHtml(str) {
+        var div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+      }
+
+      function formatDate(d) {
+        var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        return months[d.getMonth()] + ' ' + d.getDate();
+      }
+
+      function formatPortionTime(iso) {
+        if (!iso) return '';
+        var d = new Date(iso);
+        var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        var h = d.getHours();
+        var ampm = h >= 12 ? 'PM' : 'AM';
+        h = h % 12 || 12;
+        var min = d.getMinutes();
+        return months[d.getMonth()] + ' ' + d.getDate() + ', ' + h + ':' + (min < 10 ? '0' : '') + min + ' ' + ampm;
+      }
+
+      function resetCategorySelection() {
+        selectedCategory = null;
+        var options = document.querySelectorAll('.category-option');
+        for (var i = 0; i < options.length; i++) {
+          options[i].classList.remove('selected');
+          options[i].setAttribute('aria-checked', 'false');
+        }
+        document.getElementById('name-prompt').style.display = 'none';
+        document.getElementById('category-actions').style.display = 'none';
+        document.getElementById('dish-name-input').value = '';
+      }
+
+      // Event: Start a New Dish
+      document.getElementById('btn-new-dish').addEventListener('click', function() {
+        resetCategorySelection();
+        showScreen('screen-category-select');
+      });
+
+      // Event: Back from category selection
+      document.getElementById('btn-back-category').addEventListener('click', function() {
+        resetCategorySelection();
+        showScreen('screen-home');
+      });
+
+      // Event: Category option selection
+      var categoryOptions = document.querySelectorAll('.category-option');
+      for (var i = 0; i < categoryOptions.length; i++) {
+        categoryOptions[i].addEventListener('click', function() {
+          selectedCategory = this.getAttribute('data-category');
+          var options = document.querySelectorAll('.category-option');
+          for (var j = 0; j < options.length; j++) {
+            options[j].classList.remove('selected');
+            options[j].setAttribute('aria-checked', 'false');
+          }
+          this.classList.add('selected');
+          this.setAttribute('aria-checked', 'true');
+
+          var defaultName = selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1) + ' - ' + formatDate(new Date());
+          document.getElementById('dish-name-input').placeholder = defaultName;
+          document.getElementById('name-prompt').style.display = 'block';
+          document.getElementById('category-actions').style.display = 'block';
+        });
+      }
+
+      // Event: Start Build
+      document.getElementById('btn-start-build').addEventListener('click', function() {
+        if (!selectedCategory) return;
+
+        var nameInput = document.getElementById('dish-name-input');
+        var dishName = nameInput.value.trim();
+        if (!dishName) {
+          dishName = selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1) + ' - ' + formatDate(new Date());
+        }
+
+        state.activeBuild = {
+          id: generateId(),
+          name: dishName,
+          category: selectedCategory,
+          vesselWeight: null,
+          ingredients: [],
+          retareOffset: 0,
+          retareCount: 0,
+          lastCumulativeReading: 0,
+          cookMode: false,
+          createdAt: new Date().toISOString()
+        };
+        saveState();
+
+        renderBuildScreen();
+        showScreen('screen-build');
+      });
+
+      // Event: Back from build screen
+      document.getElementById('btn-back-build').addEventListener('click', function() {
+        renderHome();
+        renderContinueBanner();
+        showScreen('screen-home');
+      });
+
+      // --- Build Screen ---
+
+      function computeBuildTotals() {
+        var ingredients = state.activeBuild ? state.activeBuild.ingredients : [];
+        var totals = { weight: 0, kcal: 0, protein: 0, carbs: 0, fat: 0 };
+        for (var i = 0; i < ingredients.length; i++) {
+          var ing = ingredients[i];
+          if (ing.weightGrams != null) {
+            totals.weight += ing.weightGrams;
+            totals.kcal += ing.kcal || 0;
+            totals.protein += ing.protein || 0;
+            totals.carbs += ing.carbs || 0;
+            totals.fat += ing.fat || 0;
+          }
+        }
+        return totals;
+      }
+
+      function renderTotalsBar(totals) {
+        var bar = document.getElementById('build-totals-bar');
+        if (totals.weight === 0) {
+          bar.style.display = 'none';
+          return;
+        }
+        bar.style.display = '';
+        var weightEl = document.getElementById('totals-weight');
+        if (state.activeBuild && state.activeBuild.retareOffset > 0) {
+          weightEl.textContent = formatWeight(state.activeBuild.retareOffset) + ' + ' + formatWeight(totals.weight - state.activeBuild.retareOffset) + ' = ' + formatWeight(totals.weight);
+        } else {
+          weightEl.textContent = 'Total: ' + formatWeight(totals.weight);
+        }
+        document.getElementById('totals-kcal').textContent = totals.kcal.toFixed(1);
+        document.getElementById('totals-protein').textContent = totals.protein.toFixed(1) + 'g';
+        document.getElementById('totals-carbs').textContent = totals.carbs.toFixed(1) + 'g';
+        document.getElementById('totals-fat').textContent = totals.fat.toFixed(1) + 'g';
+      }
+
+      function submitVesselWeight() {
+        var input = document.getElementById('vessel-weight-input');
+        var val = parseFloat(input.value);
+        if (isNaN(val) || !isFinite(val) || val <= 0) {
+          input.style.borderColor = 'var(--color-error)';
+          return;
+        }
+        var valGrams = toGrams(val);
+        state.activeBuild.vesselWeight = valGrams;
+        state.activeBuild.lastCumulativeReading = valGrams;
+        saveState();
+        renderBuildScreen();
+      }
+
+      function renderBuildScreen() {
+        if (!state.activeBuild) return;
+        document.getElementById('build-title').textContent = state.activeBuild.name;
+
+        var container = document.getElementById('build-screen-body');
+        var totalsBar = document.getElementById('build-totals-bar');
+
+        if (state.activeBuild.vesselWeight == null) {
+          totalsBar.style.display = 'none';
+          container.innerHTML =
+            '<div class="vessel-entry">' +
+              '<div class="vessel-prompt">Put your empty pot on the scale. What does it read?</div>' +
+              '<div class="input-group">' +
+                '<input type="text" inputmode="decimal" id="vessel-weight-input" class="input-numeric" placeholder="0">' +
+                '<span class="input-suffix unit-cycle" id="vessel-unit-suffix">' + getUnitLabel() + '</span>' +
+              '</div>' +
+              '<button class="btn-primary" id="btn-vessel-submit" style="max-width:200px;margin:0 auto;">Got It</button>' +
+            '</div>';
+          document.getElementById('btn-vessel-submit').addEventListener('click', submitVesselWeight);
+          document.getElementById('vessel-weight-input').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') submitVesselWeight();
+          });
+          document.getElementById('vessel-unit-suffix').addEventListener('click', function() {
+            cycleWeightUnit();
+          });
+          setTimeout(function() {
+            var vi = document.getElementById('vessel-weight-input');
+            if (vi) vi.focus();
+          }, 100);
+          return;
+        }
+
+        if (state.activeBuild.cookMode) {
+          totalsBar.style.display = 'none';
+          document.getElementById('btn-ready-cook').style.display = 'none';
+          var cookTotals = computeBuildTotals();
+          var ingCount = state.activeBuild.ingredients.length;
+          container.innerHTML =
+            '<div class="cook-summary-card">' +
+              '<div class="summary-label">' + ingCount + ' ingredient' + (ingCount !== 1 ? 's' : '') + ' added</div>' +
+              '<div class="summary-weight">' + formatWeight(cookTotals.weight) + ' raw</div>' +
+              '<div class="macro-display" style="margin-top:var(--space-sm);">' +
+                '<div class="macro-headline">' + cookTotals.kcal.toFixed(1) + '</div>' +
+                '<div class="macro-headline-label">calories</div>' +
+                '<div class="macro-row">' +
+                  '<div class="macro-item macro-protein"><div class="macro-value">' + cookTotals.protein.toFixed(1) + 'g</div><div class="macro-label">protein</div></div>' +
+                  '<div class="macro-item macro-carbs"><div class="macro-value">' + cookTotals.carbs.toFixed(1) + 'g</div><div class="macro-label">carbs</div></div>' +
+                  '<div class="macro-item macro-fat"><div class="macro-value">' + cookTotals.fat.toFixed(1) + 'g</div><div class="macro-label">fat</div></div>' +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+            '<div class="cook-prompt">After cooking, weigh your dish (pot and all). What does the scale read?</div>' +
+            '<div class="cook-hint">Your pot weighs ' + formatWeight(state.activeBuild.vesselWeight) + ' &mdash; we\'ll subtract it automatically.</div>' +
+            '<div class="input-group">' +
+              '<input type="text" inputmode="decimal" id="cooked-weight-input" class="input-numeric" placeholder="0">' +
+              '<span class="input-suffix unit-cycle" id="cooked-unit-suffix">' + getUnitLabel() + '</span>' +
+            '</div>' +
+            '<div class="form-error" id="cooked-weight-error"></div>' +
+            '<button class="btn-primary" id="btn-submit-cooked-weight" style="max-width:200px;margin:var(--space-md) auto 0;">Calculate</button>' +
+            '<button class="btn-link-back" id="btn-back-from-cook">&larr; Back to Ingredients</button>';
+          document.getElementById('btn-submit-cooked-weight').addEventListener('click', submitCookedWeight);
+          document.getElementById('cooked-weight-input').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') submitCookedWeight();
+          });
+          document.getElementById('cooked-weight-input').addEventListener('input', function() {
+            document.getElementById('cooked-weight-error').classList.remove('visible');
+          });
+          document.getElementById('cooked-unit-suffix').addEventListener('click', function() {
+            cycleWeightUnit();
+          });
+          document.getElementById('btn-back-from-cook').addEventListener('click', function() {
+            state.activeBuild.cookMode = false;
+            saveState();
+            renderBuildScreen();
+          });
+          setTimeout(function() {
+            var ci = document.getElementById('cooked-weight-input');
+            if (ci) ci.focus();
+          }, 100);
+          return;
+        }
+
+        var ingredients = state.activeBuild.ingredients;
+        var cat = state.activeBuild.category || 'dish';
+        var html = '<div class="vessel-info">Pot: ' + formatWeight(state.activeBuild.vesselWeight) + '</div>';
+
+        if (state.activeBuild.templateIngredients && state.activeBuild.templateIngredients.length > 0) {
+          html += '<div class="recipe-guide">';
+          html += '<div class="recipe-guide-title">Recipe Guide</div>';
+          var addedMap = {};
+          for (var gi = 0; gi < ingredients.length; gi++) {
+            addedMap[ingredients[gi].id] = ingredients[gi];
+          }
+          var unitLabel = getUnitLabel();
+          var cfg = UNIT_CONFIG[state.settings.weightUnit || 'g'];
+          for (var ri = 0; ri < state.activeBuild.templateIngredients.length; ri++) {
+            var ref = state.activeBuild.templateIngredients[ri];
+            var addedIng = addedMap[ref.id];
+            if (addedIng) {
+              html += '<div class="recipe-guide-item added">';
+              html += '<span class="recipe-guide-name">&#x2713; ' + escapeHtml(ref.name) + '</span>';
+              html += '<span class="recipe-guide-weights">' +
+                '<span class="recipe-guide-new-weight">' + formatWeight(addedIng.weightGrams) + '</span>' +
+                '<span class="recipe-guide-last-weight">last: ' + formatWeight(ref.weightGrams) + '</span>' +
+              '</span>';
+              html += '</div>';
+            } else {
+              var prefill = fromGrams(ref.weightGrams).toFixed(cfg.decimals);
+              html += '<div class="recipe-guide-item">';
+              html += '<div class="recipe-guide-item-top">';
+              html += '<span class="recipe-guide-name">' + escapeHtml(ref.name) + '</span>';
+              html += '<span class="recipe-guide-weight">last: ' + formatWeight(ref.weightGrams) + '</span>';
+              html += '</div>';
+              html += '<div class="recipe-guide-input-row">';
+              html += '<input type="text" inputmode="decimal" class="input-numeric recipe-guide-input" id="tpl-input-' + ri + '" value="' + prefill + '" autocomplete="off">';
+              html += '<span class="input-suffix">' + unitLabel + '</span>';
+              html += '<button class="btn-primary recipe-guide-add-btn" data-tpl-index="' + ri + '">Add</button>';
+              html += '</div>';
+              html += '</div>';
+            }
+          }
+          html += '</div>';
+        }
+
+        var hasTemplateGuide = state.activeBuild.templateIngredients && state.activeBuild.templateIngredients.length > 0;
+        if (ingredients.length === 0 && !hasTemplateGuide) {
+          html +=
+            '<div class="empty-state">' +
+              '<div class="empty-icon">&#x1F955;</div>' +
+              '<p>Tap below to start adding ingredients to your ' + escapeHtml(cat) + '!</p>' +
+            '</div>';
+        } else {
+          for (var i = 0; i < ingredients.length; i++) {
+            var ing = ingredients[i];
+            var weightLabel = ing.weightGrams != null ? formatWeight(ing.weightGrams) : '';
+            var macroLine = '';
+            if (ing.kcal != null) {
+              macroLine =
+                '<span class="macro-cal">' + ing.kcal.toFixed(1) + ' kcal</span> &middot; ' +
+                '<span class="macro-p">' + ing.protein.toFixed(1) + 'P</span> &middot; ' +
+                '<span class="macro-c">' + ing.carbs.toFixed(1) + 'C</span> &middot; ' +
+                '<span class="macro-f">' + ing.fat.toFixed(1) + 'F</span>';
+            } else {
+              macroLine = escapeHtml(String(ing.kcalPer100g)) + ' kcal &middot; ' +
+                escapeHtml(String(ing.proteinPer100g)) + 'P &middot; ' +
+                escapeHtml(String(ing.carbsPer100g)) + 'C &middot; ' +
+                escapeHtml(String(ing.fatPer100g)) + 'F per 100g';
+            }
+            html +=
+              '<div class="build-ingredient-row">' +
+                '<div class="build-ingredient-info">' +
+                  '<div class="build-ingredient-name-row">' +
+                    '<span class="build-ingredient-name">' + escapeHtml(ing.name) + (ing.isCustom ? ' <span style="font-size:var(--text-xs);color:var(--color-text-secondary);">(custom)</span>' : '') + '</span>' +
+                    (weightLabel ? '<span class="build-ingredient-weight">' + weightLabel + '</span>' : '') +
+                  '</div>' +
+                  '<div class="build-ingredient-macros">' + macroLine + '</div>' +
+                '</div>' +
+                '<button class="btn-remove" data-index="' + i + '" aria-label="Remove ' + escapeHtml(ing.name) + '">&times;</button>' +
+              '</div>';
+          }
+        }
+
+        html += '<div class="build-actions-inline">';
+        html += '<button class="btn-add-inline" id="btn-add-ingredient">Add Ingredient</button>';
+        if (ingredients.length > 0) {
+          html += '<button class="btn-retare" id="btn-retare">Re-Tare</button>';
+        }
+        html += '</div>';
+        container.innerHTML = html;
+
+        var totals = computeBuildTotals();
+        renderTotalsBar(totals);
+
+        var readyCookBtn = document.getElementById('btn-ready-cook');
+        if (readyCookBtn) {
+          readyCookBtn.style.display = ingredients.length > 0 ? '' : 'none';
+        }
+
+        document.getElementById('btn-add-ingredient').addEventListener('click', function() {
+          openIngredientPicker();
+        });
+
+        var retareBtn = document.getElementById('btn-retare');
+        if (retareBtn) {
+          retareBtn.addEventListener('click', function() {
+            performRetare();
+          });
+        }
+
+        var tplAddBtns = container.querySelectorAll('.recipe-guide-add-btn');
+        for (var tb = 0; tb < tplAddBtns.length; tb++) {
+          tplAddBtns[tb].addEventListener('click', (function(idx) {
+            return function() { addTemplateIngredient(idx); };
+          })(parseInt(tplAddBtns[tb].getAttribute('data-tpl-index'), 10)));
+        }
+
+        var removeBtns = container.querySelectorAll('.btn-remove');
+        for (var j = 0; j < removeBtns.length; j++) {
+          removeBtns[j].addEventListener('click', function() {
+            var idx = parseInt(this.getAttribute('data-index'), 10);
+            var removed = state.activeBuild.ingredients[idx];
+            state.activeBuild.ingredients.splice(idx, 1);
+            var currentSegment = state.activeBuild.retareCount || 0;
+            var removedSegment = removed.segment || 0;
+            if (currentSegment > 0 && removedSegment < currentSegment) {
+              state.activeBuild.retareOffset -= removed.weightGrams;
+            } else {
+              state.activeBuild.lastCumulativeReading -= removed.weightGrams;
+            }
+            if (state.activeBuild.ingredients.length === 0) {
+              state.activeBuild.retareOffset = 0;
+              state.activeBuild.retareCount = 0;
+              state.activeBuild.lastCumulativeReading = state.activeBuild.vesselWeight;
+            } else if (currentSegment > 0) {
+              var hasPostRetare = false;
+              for (var k = 0; k < state.activeBuild.ingredients.length; k++) {
+                if ((state.activeBuild.ingredients[k].segment || 0) >= currentSegment) {
+                  hasPostRetare = true;
+                  break;
+                }
+              }
+              if (!hasPostRetare) {
+                state.activeBuild.lastCumulativeReading = 0;
+              }
+            }
+            saveState();
+            renderBuildScreen();
+          });
+        }
+      }
+
+      function performRetare() {
+        if (!state.activeBuild || state.activeBuild.ingredients.length === 0) return;
+        var totals = computeBuildTotals();
+        state.activeBuild.retareOffset = totals.weight;
+        state.activeBuild.lastCumulativeReading = 0;
+        state.activeBuild.retareCount = (state.activeBuild.retareCount || 0) + 1;
+        saveState();
+        renderBuildScreen();
+      }
+
+      // Event: Ready to Cook
+      document.getElementById('btn-ready-cook').addEventListener('click', function() {
+        enterCookMode();
+      });
+
+      function enterCookMode() {
+        if (!state.activeBuild || state.activeBuild.ingredients.length === 0) return;
+        state.activeBuild.cookMode = true;
+        saveState();
+        renderBuildScreen();
+      }
+
+      function submitCookedWeight() {
+        if (!state.activeBuild) return;
+        var input = document.getElementById('cooked-weight-input');
+        var reading = parseFloat(input.value);
+        var vesselWeight = state.activeBuild.vesselWeight;
+
+        if (isNaN(reading) || !isFinite(reading)) {
+          var errEl = document.getElementById('cooked-weight-error');
+          errEl.textContent = 'This should be higher than your pot weight (' + formatWeight(vesselWeight) + ')';
+          errEl.classList.add('visible');
+          return;
+        }
+
+        var readingGrams = toGrams(reading);
+
+        if (readingGrams <= vesselWeight) {
+          var errEl2 = document.getElementById('cooked-weight-error');
+          errEl2.textContent = 'This should be higher than your pot weight (' + formatWeight(vesselWeight) + ')';
+          errEl2.classList.add('visible');
+          return;
+        }
+
+        var cookedFoodWeight = readingGrams - vesselWeight;
+
+        if (cookedFoodWeight < 1) {
+          var errEl3 = document.getElementById('cooked-weight-error');
+          errEl3.textContent = 'This should be higher than your pot weight (' + formatWeight(vesselWeight) + ')';
+          errEl3.classList.add('visible');
+          return;
+        }
+
+        var rawTotals = computeBuildTotals();
+
+        var densityPerGram = {
+          kcal: rawTotals.kcal / cookedFoodWeight,
+          protein: rawTotals.protein / cookedFoodWeight,
+          carbs: rawTotals.carbs / cookedFoodWeight,
+          fat: rawTotals.fat / cookedFoodWeight
+        };
+
+        var batch = {
+          id: generateId(),
+          name: state.activeBuild.name,
+          category: state.activeBuild.category,
+          cookedWeight: cookedFoodWeight,
+          vesselWeight: vesselWeight,
+          rawTotals: {
+            weight: rawTotals.weight,
+            kcal: rawTotals.kcal,
+            protein: rawTotals.protein,
+            carbs: rawTotals.carbs,
+            fat: rawTotals.fat
+          },
+          densityPerGram: densityPerGram,
+          remainingWeight: cookedFoodWeight,
+          portions: [],
+          createdAt: state.activeBuild.createdAt
+        };
+
+        var template = {
+          id: generateId(),
+          name: state.activeBuild.name,
+          category: state.activeBuild.category,
+          ingredients: state.activeBuild.ingredients.map(function(ing) {
+            return {
+              id: ing.id,
+              name: ing.name,
+              kcalPer100g: ing.kcalPer100g,
+              proteinPer100g: ing.proteinPer100g,
+              carbsPer100g: ing.carbsPer100g,
+              fatPer100g: ing.fatPer100g,
+              isCustom: ing.isCustom,
+              weightGrams: ing.weightGrams
+            };
+          }),
+          createdAt: state.activeBuild.createdAt
+        };
+
+        state.batches.push(batch);
+        var existingIdx = -1;
+        for (var ti = 0; ti < state.templates.length; ti++) {
+          if (state.templates[ti].name === template.name) {
+            existingIdx = ti;
+            break;
+          }
+        }
+        if (existingIdx >= 0) {
+          template.id = state.templates[existingIdx].id;
+          template.createdAt = state.templates[existingIdx].createdAt;
+          state.templates[existingIdx] = template;
+        } else {
+          state.templates.push(template);
+        }
+        state.activeBuild = null;
+        saveState();
+
+        showCookComplete(batch, rawTotals);
+      }
+
+      function showCookComplete(batch, rawTotals) {
+        document.getElementById('complete-title').textContent = batch.name;
+        var body = document.getElementById('cook-complete-body');
+        body.innerHTML =
+          '<div class="cook-complete-success">' +
+            '<div class="success-icon">&#x2705;</div>' +
+            '<div class="success-title">' + escapeHtml(batch.name) + '</div>' +
+            '<div class="success-subtitle">' + formatWeight(batch.cookedWeight) + ' of cooked food</div>' +
+          '</div>' +
+          '<div class="cook-summary-card">' +
+            '<div class="macro-display">' +
+              '<div class="macro-headline">' + rawTotals.kcal.toFixed(1) + '</div>' +
+              '<div class="macro-headline-label">calories total</div>' +
+              '<div class="macro-row">' +
+                '<div class="macro-item macro-protein"><div class="macro-value">' + rawTotals.protein.toFixed(1) + 'g</div><div class="macro-label">protein</div></div>' +
+                '<div class="macro-item macro-carbs"><div class="macro-value">' + rawTotals.carbs.toFixed(1) + 'g</div><div class="macro-label">carbs</div></div>' +
+                '<div class="macro-item macro-fat"><div class="macro-value">' + rawTotals.fat.toFixed(1) + 'g</div><div class="macro-label">fat</div></div>' +
+              '</div>' +
+            '</div>' +
+            '<div class="density-section">' +
+              '<div class="density-label">Per ' + getUnitLabel().charAt(0).toUpperCase() + getUnitLabel().slice(1) + '</div>' +
+              '<div class="density-row">' +
+                '<div class="density-item"><div class="density-value" style="color:var(--color-calories);">' + (batch.densityPerGram.kcal * UNIT_CONFIG[state.settings.weightUnit || 'g'].factor).toFixed(1) + '</div><div class="density-unit">kcal</div></div>' +
+                '<div class="density-item"><div class="density-value" style="color:var(--color-protein);">' + (batch.densityPerGram.protein * UNIT_CONFIG[state.settings.weightUnit || 'g'].factor).toFixed(1) + 'g</div><div class="density-unit">protein</div></div>' +
+                '<div class="density-item"><div class="density-value" style="color:var(--color-carbs);">' + (batch.densityPerGram.carbs * UNIT_CONFIG[state.settings.weightUnit || 'g'].factor).toFixed(1) + 'g</div><div class="density-unit">carbs</div></div>' +
+                '<div class="density-item"><div class="density-value" style="color:var(--color-fat);">' + (batch.densityPerGram.fat * UNIT_CONFIG[state.settings.weightUnit || 'g'].factor).toFixed(1) + 'g</div><div class="density-unit">fat</div></div>' +
+              '</div>' +
+            '</div>' +
+          '</div>';
+        showScreen('screen-cook-complete');
+      }
+
+      // Event: Back to Kitchen from cook complete
+      document.getElementById('btn-back-to-kitchen').addEventListener('click', function() {
+        renderHome();
+        renderContinueBanner();
+        showScreen('screen-home');
+      });
+
+      // --- Batch Detail / Portion Logging ---
+
+      function getBatchById(id) {
+        for (var i = 0; i < state.batches.length; i++) {
+          if (state.batches[i].id === id) return state.batches[i];
+        }
+        return null;
+      }
+
+      function openBatchDetail(batchId) {
+        currentBatchId = batchId;
+        renderBatchDetail();
+        showScreen('screen-batch-detail');
+      }
+
+      function renderPortionHistory(batch) {
+        if (!batch.portions || batch.portions.length === 0) return '';
+        var html = '<div class="portion-history">' +
+          '<div class="portion-history-header">Portion History</div>';
+        for (var i = batch.portions.length - 1; i >= 0; i--) {
+          var p = batch.portions[i];
+          html += '<div class="portion-history-item">' +
+            '<div class="portion-history-meta">' +
+              '<span class="portion-history-time">' + formatPortionTime(p.createdAt) + '</span>' +
+              '<span class="portion-history-weight">' + formatWeight(p.weight) + '</span>' +
+            '</div>' +
+            '<div class="portion-history-macros">' +
+              '<span style="color:var(--color-calories);">' + p.kcal.toFixed(1) + ' cal</span> &middot; ' +
+              '<span style="color:var(--color-protein);">' + p.protein.toFixed(1) + 'g P</span> &middot; ' +
+              '<span style="color:var(--color-carbs);">' + p.carbs.toFixed(1) + 'g C</span> &middot; ' +
+              '<span style="color:var(--color-fat);">' + p.fat.toFixed(1) + 'g F</span>' +
+            '</div>' +
+          '</div>';
+        }
+        html += '</div>';
+        return html;
+      }
+
+      function renderBatchDetail() {
+        var batch = getBatchById(currentBatchId);
+        if (!batch) return;
+
+        document.getElementById('batch-detail-title').textContent = batch.name;
+        var body = document.getElementById('batch-detail-body');
+        var actions = document.getElementById('batch-detail-actions');
+        var unitFactor = UNIT_CONFIG[state.settings.weightUnit || 'g'].factor;
+        var unitLabel = getUnitLabel();
+        var unitLabelCap = unitLabel.charAt(0).toUpperCase() + unitLabel.slice(1);
+
+        if (batch.remainingWeight <= 0) {
+          actions.style.display = 'none';
+          var html =
+            '<div class="batch-detail-header batch-depleted">' +
+              '<div class="batch-remaining-large">' + formatWeight(0) + ' remaining</div>' +
+              '<div style="font-size:var(--text-sm);color:var(--color-text-secondary);margin-top:var(--space-xs);text-transform:capitalize;">' + escapeHtml(batch.category) + '</div>' +
+            '</div>' +
+            '<div class="empty-state">' +
+              '<p>All portioned out!</p>' +
+            '</div>' +
+            renderPortionHistory(batch) +
+            '<button class="btn-link-back" id="btn-depleted-back">Back to Kitchen</button>';
+          body.innerHTML = html;
+          document.getElementById('btn-depleted-back').addEventListener('click', function() {
+            renderHome();
+            renderContinueBanner();
+            showScreen('screen-home');
+          });
+          return;
+        }
+
+        actions.style.display = '';
+
+        var cfg = UNIT_CONFIG[state.settings.weightUnit || 'g'];
+        var plateDisplayVal = state.settings.plateTare
+          ? fromGrams(state.settings.plateTare).toFixed(cfg.decimals)
+          : '';
+        var portionPrompt = state.settings.plateTare
+          ? 'What does your scale read?'
+          : 'How much are you having?';
+
+        var html =
+          '<div class="batch-detail-header">' +
+            '<div class="batch-remaining-large">' + formatWeight(batch.remainingWeight) + ' remaining</div>' +
+            '<div style="font-size:var(--text-sm);color:var(--color-text-secondary);margin-top:var(--space-xs);text-transform:capitalize;">' + escapeHtml(batch.category) + '</div>' +
+          '</div>' +
+          '<div class="cook-summary-card">' +
+            '<div class="density-section" style="border-top:none;margin-top:0;padding-top:0;">' +
+              '<div class="density-label">Per ' + unitLabelCap + '</div>' +
+              '<div class="density-row">' +
+                '<div class="density-item"><div class="density-value" style="color:var(--color-calories);">' + (batch.densityPerGram.kcal * unitFactor).toFixed(1) + '</div><div class="density-unit">kcal</div></div>' +
+                '<div class="density-item"><div class="density-value" style="color:var(--color-protein);">' + (batch.densityPerGram.protein * unitFactor).toFixed(1) + 'g</div><div class="density-unit">protein</div></div>' +
+                '<div class="density-item"><div class="density-value" style="color:var(--color-carbs);">' + (batch.densityPerGram.carbs * unitFactor).toFixed(1) + 'g</div><div class="density-unit">carbs</div></div>' +
+                '<div class="density-item"><div class="density-value" style="color:var(--color-fat);">' + (batch.densityPerGram.fat * unitFactor).toFixed(1) + 'g</div><div class="density-unit">fat</div></div>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="plate-tare-area">' +
+            '<div style="font-size:var(--text-sm);color:var(--color-text-secondary);margin-bottom:var(--space-xs);">Plate weight</div>' +
+            '<div class="input-group">' +
+              '<input type="text" inputmode="decimal" id="plate-tare-input" class="input-numeric" placeholder="0" value="' + plateDisplayVal + '" autocomplete="off">' +
+              '<span class="input-suffix unit-cycle" id="plate-tare-unit-suffix">' + unitLabel + '</span>' +
+            '</div>' +
+            '<div class="plate-tare-helper">We\'ll subtract this automatically</div>' +
+          '</div>' +
+          '<div class="portion-input-area">' +
+            '<div id="portion-prompt-label" style="font-size:var(--text-md);color:var(--color-text);margin-bottom:var(--space-sm);">' + portionPrompt + '</div>' +
+            '<div class="input-group">' +
+              '<input type="text" inputmode="decimal" id="portion-weight-input" class="input-numeric" placeholder="0" autocomplete="off">' +
+              '<span class="input-suffix unit-cycle" id="portion-unit-suffix">' + unitLabel + '</span>' +
+            '</div>' +
+            '<div id="portion-warning" class="portion-warning"></div>' +
+            '<div id="portion-error" class="portion-error"></div>' +
+          '</div>' +
+          '<div id="portion-preview" class="portion-preview"></div>' +
+          renderPortionHistory(batch);
+
+        body.innerHTML = html;
+
+        document.getElementById('plate-tare-input').addEventListener('input', function() {
+          var val = parseFloat(this.value);
+          if (!isNaN(val) && isFinite(val) && val > 0) {
+            state.settings.plateTare = toGrams(val);
+          } else {
+            state.settings.plateTare = null;
+          }
+          saveState();
+          var promptEl = document.getElementById('portion-prompt-label');
+          if (promptEl) {
+            promptEl.textContent = state.settings.plateTare
+              ? 'What does your scale read?'
+              : 'How much are you having?';
+          }
+          updatePortionPreview();
+        });
+        document.getElementById('plate-tare-unit-suffix').addEventListener('click', function() {
+          cycleWeightUnit();
+        });
+
+        document.getElementById('portion-weight-input').addEventListener('input', updatePortionPreview);
+        document.getElementById('portion-weight-input').addEventListener('keydown', function(e) {
+          if (e.key === 'Enter') logPortion();
+        });
+        document.getElementById('portion-unit-suffix').addEventListener('click', function() {
+          cycleWeightUnit();
+        });
+
+        setTimeout(function() {
+          var inp = document.getElementById('portion-weight-input');
+          if (inp) inp.focus();
+        }, 100);
+      }
+
+      function updatePortionPreview() {
+        var input = document.getElementById('portion-weight-input');
+        var previewEl = document.getElementById('portion-preview');
+        var warningEl = document.getElementById('portion-warning');
+        var batch = getBatchById(currentBatchId);
+        if (!batch || !previewEl || !warningEl) return;
+
+        var val = parseFloat(input.value);
+        warningEl.textContent = '';
+
+        if (isNaN(val) || !isFinite(val) || val <= 0) {
+          previewEl.innerHTML = '';
+          return;
+        }
+
+        var portionGrams = toGrams(val);
+        var tarGrams = state.settings.plateTare || 0;
+        var netGrams = portionGrams - tarGrams;
+
+        if (tarGrams > 0 && netGrams <= 0) {
+          warningEl.textContent = 'Scale reading must be more than your plate (' + formatWeight(tarGrams) + ')';
+          previewEl.innerHTML = '';
+          return;
+        }
+
+        if (netGrams <= 0) {
+          previewEl.innerHTML = '';
+          return;
+        }
+
+        if (netGrams > batch.remainingWeight) {
+          warningEl.textContent = 'This is more than what\'s left (' + formatWeight(batch.remainingWeight) + ' remaining)';
+        }
+
+        var kcal = netGrams * batch.densityPerGram.kcal;
+        var protein = netGrams * batch.densityPerGram.protein;
+        var carbs = netGrams * batch.densityPerGram.carbs;
+        var fat = netGrams * batch.densityPerGram.fat;
+
+        previewEl.innerHTML =
+          '<div class="cook-summary-card">' +
+            '<div class="macro-display">' +
+              '<div class="macro-headline">' + kcal.toFixed(1) + '</div>' +
+              '<div class="macro-headline-label">calories</div>' +
+              '<div class="macro-row">' +
+                '<div class="macro-item macro-protein"><div class="macro-value">' + protein.toFixed(1) + 'g</div><div class="macro-label">protein</div></div>' +
+                '<div class="macro-item macro-carbs"><div class="macro-value">' + carbs.toFixed(1) + 'g</div><div class="macro-label">carbs</div></div>' +
+                '<div class="macro-item macro-fat"><div class="macro-value">' + fat.toFixed(1) + 'g</div><div class="macro-label">fat</div></div>' +
+              '</div>' +
+            '</div>' +
+          '</div>';
+      }
+
+      function logPortion() {
+        var input = document.getElementById('portion-weight-input');
+        var errorEl = document.getElementById('portion-error');
+        var batch = getBatchById(currentBatchId);
+        if (!batch) return;
+
+        errorEl.textContent = '';
+        var val = parseFloat(input.value);
+
+        if (isNaN(val) || !isFinite(val) || val <= 0) {
+          errorEl.textContent = 'Enter the weight of your portion';
+          return;
+        }
+
+        var portionGrams = toGrams(val);
+        var tarGrams = state.settings.plateTare || 0;
+        var netGrams = portionGrams - tarGrams;
+
+        if (netGrams <= 0) {
+          errorEl.textContent = tarGrams > 0
+            ? 'Scale reading must be more than your plate weight'
+            : 'Enter the weight of your portion';
+          return;
+        }
+
+        if (netGrams > batch.remainingWeight) {
+          errorEl.textContent = 'Only ' + formatWeight(batch.remainingWeight) + ' remaining';
+          return;
+        }
+
+        if (!batch.portions) batch.portions = [];
+
+        var portion = {
+          weight: netGrams,
+          kcal: netGrams * batch.densityPerGram.kcal,
+          protein: netGrams * batch.densityPerGram.protein,
+          carbs: netGrams * batch.densityPerGram.carbs,
+          fat: netGrams * batch.densityPerGram.fat,
+          createdAt: new Date().toISOString()
+        };
+
+        batch.portions.push(portion);
+        batch.remainingWeight = Math.max(0, batch.remainingWeight - netGrams);
+        saveState();
+
+        renderBatchDetail();
+      }
+
+      // Event: Back from batch detail
+      document.getElementById('btn-back-batch-detail').addEventListener('click', function() {
+        renderHome();
+        renderContinueBanner();
+        showScreen('screen-home');
+      });
+
+      // Event: Log Portion button
+      document.getElementById('btn-log-portion').addEventListener('click', function() {
+        logPortion();
+      });
+
+      // --- Ingredient Picker ---
+
+      function getAllIngredients() {
+        var merged = CURATED_INGREDIENTS.slice();
+        for (var i = 0; i < state.ingredients.length; i++) {
+          merged.push(state.ingredients[i]);
+        }
+        merged.sort(function(a, b) {
+          return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
+        });
+        return merged;
+      }
+
+      function renderIngredientList(filter) {
+        var all = getAllIngredients();
+        var query = (filter || '').toLowerCase().trim();
+        var html = '';
+
+        for (var i = 0; i < all.length; i++) {
+          var ing = all[i];
+          if (query && ing.name.toLowerCase().indexOf(query) === -1) continue;
+          var nameClass = ing.isCustom ? 'picker-row-name custom-name' : 'picker-row-name';
+          html +=
+            '<div class="picker-row" data-ingredient-index="' + i + '">' +
+              '<span class="' + nameClass + '">' + escapeHtml(ing.name) + '</span>' +
+              '<span class="picker-row-kcal">' + ing.kcalPer100g + ' kcal/100g</span>' +
+            '</div>';
+        }
+
+        if (!html && query) {
+          html = '<div class="empty-state"><p>No ingredients match &ldquo;' + escapeHtml(query) + '&rdquo;</p></div>';
+        }
+
+        document.getElementById('ingredient-picker-list').innerHTML = html;
+
+        var rows = document.getElementById('ingredient-picker-list').querySelectorAll('.picker-row');
+        for (var j = 0; j < rows.length; j++) {
+          rows[j].addEventListener('click', function() {
+            var idx = parseInt(this.getAttribute('data-ingredient-index'), 10);
+            var allItems = getAllIngredients();
+            selectIngredient(allItems[idx]);
+          });
+        }
+      }
+
+      function selectIngredient(ingredient) {
+        if (!state.activeBuild) return;
+        pendingIngredient = {
+          id: ingredient.id,
+          name: ingredient.name,
+          kcalPer100g: ingredient.kcalPer100g,
+          proteinPer100g: ingredient.proteinPer100g,
+          carbsPer100g: ingredient.carbsPer100g,
+          fatPer100g: ingredient.fatPer100g,
+          isCustom: ingredient.isCustom || false
+        };
+        showReadingEntry();
+      }
+
+      function openIngredientPicker() {
+        document.getElementById('ingredient-search').value = '';
+        document.getElementById('picker-view').style.display = '';
+        document.getElementById('custom-form-view').style.display = 'none';
+        document.getElementById('reading-entry-view').style.display = 'none';
+        renderIngredientList('');
+        document.getElementById('ingredient-overlay-scrim').classList.add('open');
+        document.getElementById('ingredient-bottom-sheet').classList.add('open');
+        setTimeout(function() {
+          document.getElementById('ingredient-search').focus();
+        }, 300);
+      }
+
+      function closeIngredientPicker() {
+        document.getElementById('ingredient-overlay-scrim').classList.remove('open');
+        document.getElementById('ingredient-bottom-sheet').classList.remove('open');
+      }
+
+      // Event: Scrim tap closes overlay
+      document.getElementById('ingredient-overlay-scrim').addEventListener('click', function() {
+        closeIngredientPicker();
+      });
+
+      // Event: Search filter
+      document.getElementById('ingredient-search').addEventListener('input', function() {
+        renderIngredientList(this.value);
+      });
+
+      // --- Custom Ingredient Form ---
+
+      function showCustomForm() {
+        savingCustom = false;
+        document.getElementById('picker-view').style.display = 'none';
+        document.getElementById('reading-entry-view').style.display = 'none';
+        document.getElementById('custom-form-view').style.display = '';
+        document.getElementById('custom-name').value = '';
+        document.getElementById('custom-kcal').value = '';
+        document.getElementById('custom-protein').value = '';
+        document.getElementById('custom-carbs').value = '';
+        document.getElementById('custom-fat').value = '';
+        document.getElementById('custom-form-error').classList.remove('visible');
+        setTimeout(function() {
+          document.getElementById('custom-name').focus();
+        }, 100);
+      }
+
+      function hideCustomForm() {
+        document.getElementById('custom-form-view').style.display = 'none';
+        document.getElementById('picker-view').style.display = '';
+      }
+
+      // --- Reading Entry ---
+
+      function showReadingEntry() {
+        if (!pendingIngredient || !state.activeBuild) return;
+        document.getElementById('picker-view').style.display = 'none';
+        document.getElementById('custom-form-view').style.display = 'none';
+        document.getElementById('reading-entry-view').style.display = '';
+        document.getElementById('reading-ingredient-name').textContent = pendingIngredient.name;
+        document.getElementById('reading-unit-suffix').textContent = getUnitLabel();
+
+        var lastReading = state.activeBuild.lastCumulativeReading;
+        var isFirst = state.activeBuild.ingredients.length === 0;
+        var refLabel = isFirst ? 'Pot weight' : 'Last reading';
+        document.getElementById('reading-reference').textContent = refLabel + ': ' + formatWeight(lastReading);
+
+        document.getElementById('reading-input').value = '';
+        document.getElementById('reading-error').classList.remove('visible');
+        document.getElementById('btn-confirm-reading').textContent = 'Add to ' + state.activeBuild.name;
+
+        setTimeout(function() {
+          document.getElementById('reading-input').focus();
+        }, 100);
+      }
+
+      function confirmReading() {
+        if (!pendingIngredient || !state.activeBuild) return;
+        var input = document.getElementById('reading-input');
+        var reading = parseFloat(input.value);
+
+        if (isNaN(reading) || !isFinite(reading) || reading <= 0) {
+          var errEl = document.getElementById('reading-error');
+          errEl.textContent = 'Enter a weight greater than 0';
+          errEl.classList.add('visible');
+          return;
+        }
+
+        var readingGrams = toGrams(reading);
+        var lastReading = state.activeBuild.lastCumulativeReading;
+
+        if (readingGrams <= lastReading) {
+          if (!confirm('This reading is lower than the last (' + formatWeight(lastReading) + '). Re-tare the scale and use ' + formatWeight(readingGrams) + ' as the new weight?')) {
+            return;
+          }
+          var totals = computeBuildTotals();
+          state.activeBuild.retareOffset = totals.weight;
+          state.activeBuild.lastCumulativeReading = 0;
+          state.activeBuild.retareCount = (state.activeBuild.retareCount || 0) + 1;
+          lastReading = 0;
+        }
+
+        var delta = readingGrams - lastReading;
+        var entry = {
+          id: pendingIngredient.id,
+          name: pendingIngredient.name,
+          kcalPer100g: pendingIngredient.kcalPer100g,
+          proteinPer100g: pendingIngredient.proteinPer100g,
+          carbsPer100g: pendingIngredient.carbsPer100g,
+          fatPer100g: pendingIngredient.fatPer100g,
+          isCustom: pendingIngredient.isCustom,
+          weightGrams: delta,
+          cumulativeReading: readingGrams,
+          kcal: delta * pendingIngredient.kcalPer100g / 100,
+          protein: delta * pendingIngredient.proteinPer100g / 100,
+          carbs: delta * pendingIngredient.carbsPer100g / 100,
+          fat: delta * pendingIngredient.fatPer100g / 100,
+          segment: state.activeBuild.retareCount || 0
+        };
+
+        state.activeBuild.ingredients.push(entry);
+        state.activeBuild.lastCumulativeReading = readingGrams;
+        pendingIngredient = null;
+        saveState();
+        closeIngredientPicker();
+        renderBuildScreen();
+      }
+
+      function cancelReading() {
+        pendingIngredient = null;
+        document.getElementById('reading-entry-view').style.display = 'none';
+        document.getElementById('picker-view').style.display = '';
+        renderIngredientList(document.getElementById('ingredient-search').value);
+      }
+
+      var savingCustom = false;
+
+      function saveCustomIngredient() {
+        if (savingCustom) return;
+        var name = document.getElementById('custom-name').value.trim();
+        var kcal = parseFloat(document.getElementById('custom-kcal').value);
+        var protein = parseFloat(document.getElementById('custom-protein').value);
+        var carbs = parseFloat(document.getElementById('custom-carbs').value);
+        var fat = parseFloat(document.getElementById('custom-fat').value);
+
+        if (!name || isNaN(kcal) || isNaN(protein) || isNaN(carbs) || isNaN(fat) ||
+            !isFinite(kcal) || !isFinite(protein) || !isFinite(carbs) || !isFinite(fat) ||
+            kcal < 0 || protein < 0 || carbs < 0 || fat < 0) {
+          document.getElementById('custom-form-error').classList.add('visible');
+          return;
+        }
+
+        savingCustom = true;
+        var custom = {
+          id: generateId(),
+          name: name,
+          category: 'custom',
+          kcalPer100g: kcal,
+          proteinPer100g: protein,
+          carbsPer100g: carbs,
+          fatPer100g: fat,
+          isCustom: true
+        };
+
+        state.ingredients.push(custom);
+        saveState();
+        selectIngredient(custom);
+      }
+
+      // Event: Show custom form
+      document.getElementById('btn-show-custom-form').addEventListener('click', function() {
+        showCustomForm();
+      });
+
+      // Event: Back from custom form
+      document.getElementById('btn-custom-back').addEventListener('click', function() {
+        hideCustomForm();
+      });
+
+      // Event: Cancel custom form
+      document.getElementById('btn-cancel-custom').addEventListener('click', function() {
+        hideCustomForm();
+      });
+
+      // Clear custom form error on input
+      ['custom-name', 'custom-kcal', 'custom-protein', 'custom-carbs', 'custom-fat'].forEach(function(id) {
+        document.getElementById(id).addEventListener('input', function() {
+          document.getElementById('custom-form-error').classList.remove('visible');
+        });
+      });
+
+      // Event: Save custom ingredient
+      document.getElementById('btn-save-custom').addEventListener('click', function() {
+        saveCustomIngredient();
+      });
+
+      // Event: Confirm reading
+      document.getElementById('btn-confirm-reading').addEventListener('click', function() {
+        confirmReading();
+      });
+
+      // Event: Cancel reading
+      document.getElementById('btn-cancel-reading').addEventListener('click', function() {
+        cancelReading();
+      });
+
+      // Event: Enter key on reading input
+      document.getElementById('reading-input').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') confirmReading();
+      });
+
+      document.getElementById('reading-input').addEventListener('input', function() {
+        document.getElementById('reading-error').classList.remove('visible');
+      });
+
+      document.getElementById('reading-unit-suffix').addEventListener('click', function() {
+        cycleWeightUnit();
+      });
+
+      // On load: restore correct screen
+      function renderContinueBanner() {
+        var existing = document.getElementById('continue-banner');
+        if (existing) existing.remove();
+        if (!state.activeBuild) return;
+
+        var banner = document.createElement('div');
+        banner.id = 'continue-banner';
+        banner.className = 'card';
+        banner.style.cssText = 'margin-bottom:var(--space-md);cursor:pointer;border-color:var(--color-primary-light);';
+        var ingCount = state.activeBuild.ingredients.length;
+        var bannerDetail = ingCount + ' ingredient' + (ingCount !== 1 ? 's' : '') + ' added';
+        var totals = computeBuildTotals();
+        if (totals.weight > 0) {
+          bannerDetail += ' &middot; ' + formatWeight(totals.weight) + ' total';
+        }
+        banner.innerHTML =
+          '<div style="font-weight:700;color:var(--color-primary);">Continue building: ' + escapeHtml(state.activeBuild.name) + '</div>' +
+          '<div style="font-size:var(--text-sm);color:var(--color-text-secondary);margin-top:var(--space-xs);">' +
+            bannerDetail + ' &mdash; tap to continue' +
+          '</div>';
+        banner.addEventListener('click', function() {
+          renderBuildScreen();
+          showScreen('screen-build');
+        });
+
+        var content = document.querySelector('#screen-home .screen-content');
+        if (content) content.insertBefore(banner, content.firstChild);
+      }
+
+      function init() {
+        renderHome();
+        renderContinueBanner();
+        showScreen('screen-home');
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+      } else {
+        init();
+      }
+    })();
+  </script>
+</body>
+</html>
